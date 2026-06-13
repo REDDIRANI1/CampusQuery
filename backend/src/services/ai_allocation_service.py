@@ -3,7 +3,7 @@ from sqlalchemy import text
 import re
 from tenacity import retry, stop_after_attempt, wait_exponential
 from google import genai
-from backend.src.core.config import settings
+from src.core.config import settings
 
 def ask_allocation_question(question: str, db: Session):
     client = genai.Client(api_key=settings.GEMINI_API_KEY)

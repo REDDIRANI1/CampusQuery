@@ -5,9 +5,9 @@ from pydantic import BaseModel
 from uuid import UUID
 from typing import List, Optional
 
-from backend.src.core.database import get_db, get_datasets_readonly_db
-from backend.src.models.dataset import UploadedDataset, DatasetQuery
-from backend.src.services.dataset_service import process_and_store_dataset
+from src.core.database import get_db, get_datasets_readonly_db
+from src.models.dataset import UploadedDataset, DatasetQuery
+from src.services.dataset_service import process_and_store_dataset
 
 router = APIRouter(prefix="/datasets", tags=["Datasets"])
 
@@ -44,7 +44,7 @@ def query_dataset(dataset_id: UUID, request: DatasetQueryRequest, db: Session = 
     if not dataset:
         raise HTTPException(status_code=404, detail="Dataset not found")
         
-    from backend.src.services.ai_sql_service import ask_dataset_question
+    from src.services.ai_sql_service import ask_dataset_question
     return ask_dataset_question(dataset.dynamic_table_name, request.question, db, dataset.id, app_db=app_db)
 
 @router.get("/{dataset_id}/queries")

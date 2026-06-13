@@ -3,12 +3,12 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 
-from backend.src.core.database import get_db, get_allocation_readonly_db
-from backend.src.services.allocation import run_allocation, get_allocation_stats
-from backend.src.api.routers.students import StudentResponse
-from backend.src.models.student import Student
-from backend.src.api.routers.courses import CourseResponse
-from backend.src.models.course import Course
+from src.core.database import get_db, get_allocation_readonly_db
+from src.services.allocation import run_allocation, get_allocation_stats
+from src.api.routers.students import StudentResponse
+from src.models.student import Student
+from src.api.routers.courses import CourseResponse
+from src.models.course import Course
 
 router = APIRouter(prefix="/allocation", tags=["Allocation"])
 
@@ -49,5 +49,5 @@ class AIResponse(BaseModel):
 @router.post("/ask", response_model=AIResponse)
 def ask_allocation_ai(query: AIQuery, db: Session = Depends(get_allocation_readonly_db)):
     # Placeholder: connect to ai_allocation_service
-    from backend.src.services.ai_allocation_service import ask_allocation_question
+    from src.services.ai_allocation_service import ask_allocation_question
     return ask_allocation_question(query.question, db)

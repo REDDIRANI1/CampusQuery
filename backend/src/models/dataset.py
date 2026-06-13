@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from sqlalchemy import Column, String, DateTime, Text, JSON, Integer
 from sqlalchemy.dialects.postgresql import UUID
-from backend.src.models.base import Base
+from src.models.base import Base
 
 class UploadedDataset(Base):
     __tablename__ = "uploaded_datasets"

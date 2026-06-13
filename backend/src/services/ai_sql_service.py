@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text, inspect, MetaData, Table
 from google import genai
-from backend.src.core.config import settings
-from backend.src.models.dataset import DatasetQuery
+from src.core.config import settings
+from src.models.dataset import DatasetQuery
 import logging
 import re
 from tenacity import retry, stop_after_attempt, wait_exponential

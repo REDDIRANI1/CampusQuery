@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, String, Float, DateTime, Enum, ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from backend.src.models.base import Base
+from src.models.base import Base
 import enum
 
 class CategoryEnum(str, enum.Enum):

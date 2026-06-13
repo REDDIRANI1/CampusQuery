@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, asc, text
-from backend.src.models.student import Student, StudentPreference, CategoryEnum, AllocationStatusEnum
-from backend.src.models.course import Course, SystemState
+from src.models.student import Student, StudentPreference, CategoryEnum, AllocationStatusEnum
+from src.models.course import Course, SystemState
 
 def run_allocation(db: Session):
     # 1. Lock system state

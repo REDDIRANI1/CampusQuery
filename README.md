@@ -25,12 +25,13 @@ docker compose up -d
 ```
 
 ### 2. Backend Setup
-From the project root directory, activate the virtual environment, and run the server:
+Navigate to the `backend` directory, activate the virtual environment, and run the server:
 ```bash
-python3 -m venv backend/.venv
-source backend/.venv/bin/activate
-pip install -r backend/requirements.txt
-PYTHONPATH=. uvicorn backend.src.main:app --reload --port 8000
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt # (or install dependencies manually if needed)
+uvicorn src.main:app --reload --port 8000
 ```
 > Note: Ensure your `.env` file is present in the root directory with `GEMINI_API_KEY` and the three database connection URLs.
 

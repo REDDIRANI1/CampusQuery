@@ -7,14 +7,14 @@ socket.getaddrinfo = my_getaddrinfo
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.src.core.config import settings
-from backend.src.api.routers import courses, students, allocation, datasets
-from backend.src.core.database import engine
-from backend.src.models.base import Base
+from src.core.config import settings
+from src.api.routers import courses, students, allocation, datasets
+from src.core.database import engine
+from src.models.base import Base
 # Import models to ensure they are registered on the Base before metadata.create_all is called
-from backend.src.models.course import Course, SystemState
-from backend.src.models.student import Student, StudentPreference
-from backend.src.models.dataset import UploadedDataset, DatasetQuery
+from src.models.course import Course, SystemState
+from src.models.student import Student, StudentPreference
+from src.models.dataset import UploadedDataset, DatasetQuery
 
 # Create all core application tables in the public schema on startup
 Base.metadata.create_all(bind=engine)

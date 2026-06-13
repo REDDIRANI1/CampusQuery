@@ -4,9 +4,9 @@ from pydantic import BaseModel, Field, constr
 from uuid import UUID
 from typing import List, Optional
 
-from backend.src.core.database import get_db
-from backend.src.models.student import Student, StudentPreference, CategoryEnum, AllocationStatusEnum
-from backend.src.models.course import SystemState
+from src.core.database import get_db
+from src.models.student import Student, StudentPreference, CategoryEnum, AllocationStatusEnum
+from src.models.course import SystemState
 
 router = APIRouter(prefix="/students", tags=["Students"])
 

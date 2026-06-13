@@ -3,7 +3,7 @@ import re
 import uuid
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData, text
 from sqlalchemy.orm import Session
-from backend.src.models.dataset import UploadedDataset
+from src.models.dataset import UploadedDataset
 from fastapi import UploadFile
 
 metadata = MetaData(schema="datasets_schema")

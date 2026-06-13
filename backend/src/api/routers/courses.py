@@ -4,8 +4,8 @@ from pydantic import BaseModel, Field
 from uuid import UUID
 from typing import List
 
-from backend.src.core.database import get_db
-from backend.src.models.course import Course
+from src.core.database import get_db
+from src.models.course import Course
 
 router = APIRouter(prefix="/courses", tags=["Courses"])
 

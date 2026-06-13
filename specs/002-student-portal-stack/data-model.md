@@ -22,7 +22,7 @@ Represents student applicants.
 - `marks`: Float
 - `category`: Enum (General, OBC, SC, ST)
 - `application_date`: DateTime
-- `allocation_status`: Enum ('Pending', 'Allocated', 'Rejected') (Default 'Pending')
+- `allocation_status`: Enum ('Pending', 'Allocated', 'Rejected')
 - `allocated_course_id`: UUID (Nullable, Foreign Key to `courses`)
 - `allocated_quota`: String (Nullable, 'General', 'OBC', 'SC', 'ST')
 - `created_at`: DateTime

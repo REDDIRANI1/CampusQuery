@@ -13,3 +13,25 @@ assigment.md
 .specify/
 specs/
 .env
+
+# Node.js
+node_modules/
+dist/
+build/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Next.js
+.next/
+out/
+
+# Universal
+.DS_Store
+Thumbs.db
+*.tmp

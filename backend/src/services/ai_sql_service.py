@@ -22,7 +22,7 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session, da
     # 1. Fetch DDL for the specific dataset table
     # Reflect the table to get its schema
     engine = db.get_bind()
-    table = Table(dynamic_table_name, metadata, autoload_with=engine)
+    table = Table(dynamic_table_name, metadata, autoload_with=engine, extend_existing=True)
     
     columns_info = [f"{col.name} ({col.type})" for col in table.columns]
     ddl = f"Table: {dynamic_table_name}\nColumns: " + ", ".join(columns_info)
@@ -65,8 +65,8 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session, da
             
         # 2. Execute query (using datasets_readonly_user via FastAPI dependency)
         # Add statement timeout and set search path for safety
-        db.execute(text("SET search_path TO datasets_schema, public"))
-        db.execute(text("SET statement_timeout = 3000"))
+        db.execute(text("SET LOCAL search_path TO datasets_schema, public"))
+        db.execute(text("SET LOCAL statement_timeout = '3s'"))
         result = db.execute(text(sql_query))
         rows = [dict(row._mapping) for row in result.fetchall()]
         

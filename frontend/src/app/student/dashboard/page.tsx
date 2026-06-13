@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchAPI } from '@/lib/api';
 
 interface Preference {
@@ -66,6 +66,7 @@ export default function StudentDashboard() {
           <input
             type="text"
             required
+            aria-label="Enter your Student UUID"
             placeholder="Enter your Student UUID"
             value={studentId}
             onChange={e => setStudentId(e.target.value)}

@@ -221,6 +221,7 @@ export default function AdminDashboard() {
             <form onSubmit={handleAskAI} className="flex gap-2">
               <input
                 type="text"
+                aria-label="Ask a question about the allocation results"
                 placeholder="Ask a question..."
                 value={chatInput}
                 onChange={e => setChatInput(e.target.value)}

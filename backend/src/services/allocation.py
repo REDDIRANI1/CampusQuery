@@ -43,13 +43,15 @@ def run_allocation(db: Session):
         } for c in courses_db}
 
         # 3. Process Student-by-Student by Merit
-        students = db.query(Student).order_by(
+        from sqlalchemy.orm import joinedload
+        students = db.query(Student).options(joinedload(Student.preferences)).order_by(
             desc(Student.marks), 
             asc(Student.application_date)
         ).all()
 
         for student in students:
-            prefs = db.query(StudentPreference).filter(StudentPreference.student_id == student.id).order_by(StudentPreference.priority).all()
+            # Sort preferences by priority in memory
+            prefs = sorted(student.preferences, key=lambda p: p.priority)
             
             allocated = False
             for pref in prefs:

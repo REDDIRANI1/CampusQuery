@@ -59,7 +59,7 @@ def ask_allocation_question(question: str, db: Session):
             }
             
         # Execute query
-        db.execute(text("SET statement_timeout = 3000"))
+        db.execute(text("SET LOCAL statement_timeout = '3s'"))
         result = db.execute(text(sql_query))
         rows = result.fetchall()
         

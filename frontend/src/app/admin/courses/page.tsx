@@ -80,29 +80,29 @@ export default function CourseManagement() {
           <h2 className="text-xl font-semibold mb-4">Add New Course</h2>
           <form onSubmit={handleCreate} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700">Course Name</label>
-              <input type="text" required value={name} onChange={e => setName(e.target.value)}
+              <label htmlFor="courseName" className="block text-sm font-medium text-slate-700">Course Name</label>
+              <input id="courseName" type="text" required value={name} onChange={e => setName(e.target.value)}
                 className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700">General Seats</label>
-                <input type="number" required min="0" value={genSeats} onChange={e => setGenSeats(parseInt(e.target.value) || 0)}
+                <label htmlFor="genSeats" className="block text-sm font-medium text-slate-700">General Seats</label>
+                <input id="genSeats" type="number" required min="0" value={genSeats} onChange={e => setGenSeats(parseInt(e.target.value) || 0)}
                   className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700">OBC Seats</label>
-                <input type="number" required min="0" value={obcSeats} onChange={e => setObcSeats(parseInt(e.target.value) || 0)}
+                <label htmlFor="obcSeats" className="block text-sm font-medium text-slate-700">OBC Seats</label>
+                <input id="obcSeats" type="number" required min="0" value={obcSeats} onChange={e => setObcSeats(parseInt(e.target.value) || 0)}
                   className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700">SC Seats</label>
-                <input type="number" required min="0" value={scSeats} onChange={e => setScSeats(parseInt(e.target.value) || 0)}
+                <label htmlFor="scSeats" className="block text-sm font-medium text-slate-700">SC Seats</label>
+                <input id="scSeats" type="number" required min="0" value={scSeats} onChange={e => setScSeats(parseInt(e.target.value) || 0)}
                   className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700">ST Seats</label>
-                <input type="number" required min="0" value={stSeats} onChange={e => setStSeats(parseInt(e.target.value) || 0)}
+                <label htmlFor="stSeats" className="block text-sm font-medium text-slate-700">ST Seats</label>
+                <input id="stSeats" type="number" required min="0" value={stSeats} onChange={e => setStSeats(parseInt(e.target.value) || 0)}
                   className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
               </div>
             </div>

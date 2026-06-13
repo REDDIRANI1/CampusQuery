@@ -311,6 +311,7 @@ export default function SQLAssistantPage() {
             <form onSubmit={handleAskAI} className="flex gap-3">
               <input
                 type="text"
+                aria-label="Ask a question about the dataset"
                 placeholder="E.g., What is the average age of students?"
                 value={chatInput}
                 onChange={e => setChatInput(e.target.value)}

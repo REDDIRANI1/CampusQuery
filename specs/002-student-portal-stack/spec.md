@@ -15,7 +15,7 @@
 - Q: Updating Course Preferences → A: Allow students to update preferences until allocation runs.
 - Q: Handling AI API Errors → A: Retry automatically with exponential backoff, then show a graceful error if still failing.
 - Q: Preventing Destructive SQL Execution → A: Execute all AI-generated queries using a strict read-only database user/role.
-- Q: Handling Unrecognized SQL Prompts → A: Ask the user to rephrase and suggest 2-3 sample queries based on the dataset schema.
+- Q: Handling Unrecognized SQL Prompts → A: Return a graceful error message indicating the prompt could not be parsed into a read-only query.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -106,12 +106,7 @@ The allocation algorithm runs on a merit-first basis to ensure fairness and lega
    - **Rejection**: If a student cannot be allocated to any of their 3 preferences, their allocation status is set to `Rejected`.
 
 #### 2. Rejection Rate Definition and Calculation
-The system defines "rejection rate" for a course in two ways to provide comprehensive analytics:
-- **Preference-based Rejection Rate (Default)**: The ratio of students who preferred the course (at any priority level) but were not allocated to it.
-  $$\text{Rejection Rate} = \frac{\text{Total Applicants who Preferred Course } C - \text{Students Allocated to Course } C}{\text{Total Applicants who Preferred Course } C} \times 100$$
-- **First-Preference-based Rejection Rate**: The ratio of students who selected the course as their 1st preference but did not get allocated to it.
-  $$\text{Rejection Rate (1st Pref)} = \frac{\text{Students with 1st Preference for } C \text{ but not allocated to } C}{\text{Students with 1st Preference for } C} \times 100$$
-The AI Assistant and analytics dashboard MUST support both calculations, using dynamic SQL aggregation to prevent out-of-sync caching.
+The system calculates the "rejection rate" for a course as a simple rejection count: the number of times a student evaluated the course as a preference but was denied due to lack of seats. This provides a straightforward metric for course popularity versus availability.
 
 #### 3. CSV Dataset Upload and Schema Detection Fallbacks
 - **Header Sanitization**: Uploaded CSV/Excel headers are sanitized using regex: lowercase, replace spaces/hyphens/special characters with `_`, and match `^[a-z0-9_]+$`. Missing headers are auto-filled with `col_1`, `col_2`, etc.
@@ -128,7 +123,7 @@ The AI Assistant and analytics dashboard MUST support both calculations, using d
 
 #### 5. AI API Failure & Fallback Policies
 - **Rate-Limits & Timeouts**: Gemini API calls timeout at 3 seconds. The system implements a maximum of 3 retries with exponential backoff (initial delay 1s, backoff factor 2, max delay 10s).
-- **Vague Prompts & Recovery**: If a prompt is vague, cannot be converted to SQL, or SQL execution fails, the system returns a standard JSON error, prompts the user to rephrase, and suggests 2-3 sample queries based on the target schema.
+- **Vague Prompts & Recovery**: If a prompt is vague, cannot be converted to SQL, or SQL execution fails, the system returns a standard JSON error prompting the user to rephrase.
 
 ## Requirements *(mandatory)*
 
@@ -146,10 +141,10 @@ The AI Assistant and analytics dashboard MUST support both calculations, using d
 - **FR-010**: System MUST securely execute the generated SQL queries using `datasets_readonly_user` and display the results.
 - **FR-011**: System MUST allow students to update their course preferences after submission, provided the allocation process has not yet been executed.
 - **FR-012**: System MUST enforce query security by enforcing read-only database connections, statement timeouts, and query limits.
-- **FR-013**: System MUST gracefully handle unrecognized natural language prompts by asking the user to rephrase and suggesting 2-3 sample queries based on the schema.
-- **FR-014**: System MUST calculate course rejection rates dynamically using preference-based and first-preference calculations.
+- **FR-013**: System MUST gracefully handle unrecognized natural language prompts by asking the user to rephrase.
+- **FR-014**: System MUST calculate course rejection rates by tracking preference denials.
 - **FR-015**: System MUST explicitly track student allocation status (`Pending`, `Allocated`, `Rejected`) to differentiate between unallocated and rejected students.
-- **FR-016**: System MUST allow users to export query results and datasets.
+- **FR-016**: System MUST allow users to export query results.
 - **FR-017**: System MUST track and display query history of past AI interactions in a sidebar.
 
 ### Key Entities *(include if feature involves data)*

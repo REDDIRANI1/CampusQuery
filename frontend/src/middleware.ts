@@ -8,8 +8,11 @@ export function middleware(req: NextRequest) {
     const authValue = basicAuth.split(' ')[1];
     const [user, pwd] = atob(authValue).split(':');
 
-    // Hardcoded dummy login for public testing
-    if (user === 'rani' && pwd === 'assignment@123') {
+    const expectedUser = process.env.ADMIN_USER || 'admin';
+    const expectedPwd = process.env.ADMIN_PASSWORD || 'password123';
+
+    // Basic auth check against environment variables
+    if (user === expectedUser && pwd === expectedPwd) {
       return NextResponse.next();
     }
   }

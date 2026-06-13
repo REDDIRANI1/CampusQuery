@@ -1,21 +1,43 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { fetchAPI } from '@/lib/api';
 
+interface Dataset {
+  id: string;
+  filename: string;
+  dynamic_table_name: string;
+  row_count: number;
+}
+
+interface QueryRecord {
+  id: string;
+  natural_language_query: string;
+  generated_sql: string;
+}
+
+interface ChatItem {
+  type: 'user' | 'ai';
+  text?: string;
+  insight?: string;
+  sql?: string;
+  results?: Record<string, unknown>[];
+  error?: string;
+}
+
 export default function SQLAssistantPage() {
-  const [datasets, setDatasets] = useState<any[]>([]);
+  const [datasets, setDatasets] = useState<Dataset[]>([]);
   const [activeDataset, setActiveDataset] = useState<string | null>(null);
-  const [queryHistory, setQueryHistory] = useState<any[]>([]);
+  const [queryHistory, setQueryHistory] = useState<QueryRecord[]>([]);
   
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
   
   const [chatInput, setChatInput] = useState('');
-  const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [chatHistory, setChatHistory] = useState<ChatItem[]>([]);
   const [chatLoading, setChatLoading] = useState(false);
 
-  const loadDatasets = async () => {
+  const loadDatasets = useCallback(async () => {
     try {
       const data = await fetchAPI('/datasets/');
       setDatasets(data);
@@ -25,10 +47,19 @@ export default function SQLAssistantPage() {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [activeDataset]);
 
   useEffect(() => {
     loadDatasets();
+  }, [loadDatasets]);
+
+  const loadHistory = useCallback(async (id: string) => {
+    try {
+      const data = await fetchAPI(`/datasets/${id}/queries`);
+      setQueryHistory(data);
+    } catch (err) {
+      console.error("Failed to load history", err);
+    }
   }, []);
 
   useEffect(() => {
@@ -37,16 +68,7 @@ export default function SQLAssistantPage() {
     } else {
       setQueryHistory([]);
     }
-  }, [activeDataset]);
-
-  const loadHistory = async (id: string) => {
-    try {
-      const data = await fetchAPI(`/datasets/${id}/queries`);
-      setQueryHistory(data);
-    } catch (err) {
-      console.error("Failed to load history", err);
-    }
-  };
+  }, [activeDataset, loadHistory]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,7 +84,6 @@ export default function SQLAssistantPage() {
       const response = await fetch('http://localhost:8000/api/v1/datasets/upload', {
         method: 'POST',
         body: formData,
-        // No Content-Type header so browser sets multipart boundary automatically
       });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -72,8 +93,8 @@ export default function SQLAssistantPage() {
       const newDataset = await response.json();
       setActiveDataset(newDataset.id);
       await loadDatasets();
-    } catch (err: any) {
-      setUploadError(err.message);
+    } catch (err) {
+      setUploadError((err as Error).message);
     } finally {
       setUploading(false);
       e.target.value = ''; // reset input
@@ -102,14 +123,14 @@ export default function SQLAssistantPage() {
         results: data.results,
         error: data.error
       }]);
-    } catch (err: any) {
-      setChatHistory(prev => [...prev, { type: 'ai', error: "Error: " + err.message }]);
+    } catch (err) {
+      setChatHistory(prev => [...prev, { type: 'ai', error: "Error: " + (err as Error).message }]);
     } finally {
       setChatLoading(false);
     }
   };
 
-  const exportCSV = (results: any[]) => {
+  const exportCSV = (results: Record<string, unknown>[]) => {
     if (!results || results.length === 0) return;
     const keys = Object.keys(results[0]);
     const csvContent = [
@@ -173,10 +194,10 @@ export default function SQLAssistantPage() {
              <h2 className="text-lg font-bold text-slate-900 mb-4">Query History</h2>
              <div className="space-y-3 overflow-y-auto flex-1">
                {queryHistory.map(q => (
-                 <div key={q.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-700">
-                    <p className="font-medium mb-1">"{q.natural_language_query}"</p>
-                    <p className="text-xs text-slate-400 truncate font-mono">{q.generated_sql}</p>
-                 </div>
+                  <div key={q.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-700">
+                     <p className="font-medium mb-1">&quot;{q.natural_language_query}&quot;</p>
+                     <p className="text-xs text-slate-400 truncate font-mono">{q.generated_sql}</p>
+                  </div>
                ))}
                {queryHistory.length === 0 && <p className="text-sm text-slate-400 text-center py-4">No history for this dataset.</p>}
              </div>
@@ -202,7 +223,7 @@ export default function SQLAssistantPage() {
             {activeDataset && chatHistory.length === 0 && (
               <div className="text-center text-slate-400 mt-20">
                 Type a natural language question about your dataset.
-                <br/>(e.g., "Show me the top 5 highest marks")
+                <br/>(e.g., &quot;Show me the top 5 highest marks&quot;)
               </div>
             )}
 
@@ -223,10 +244,12 @@ export default function SQLAssistantPage() {
                             <h4 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">AI Insight</h4>
                             <p className="text-slate-900 font-medium text-lg">{msg.insight}</p>
                           </div>
-                          <button onClick={() => exportCSV(msg.results)} className="px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-lg hover:bg-slate-50 font-medium text-slate-700 flex items-center gap-2">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                            Export CSV
-                          </button>
+                          {msg.results && (
+                            <button onClick={() => exportCSV(msg.results || [])} className="px-3 py-1.5 text-sm bg-white border border-slate-300 rounded-lg hover:bg-slate-50 font-medium text-slate-700 flex items-center gap-2">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                              Export CSV
+                            </button>
+                          )}
                         </div>
 
                         {msg.sql && (
@@ -239,7 +262,7 @@ export default function SQLAssistantPage() {
                         )}
 
                         {msg.results && msg.results.length > 0 ? (
-                          <div className="overflow-x-auto border border-slate-200 rounded-lg">
+                          <div className="max-h-96 overflow-y-auto overflow-x-auto border border-slate-200 rounded-lg">
                             <table className="min-w-full divide-y divide-slate-200 text-sm">
                               <thead className="bg-slate-100">
                                 <tr>
@@ -249,9 +272,9 @@ export default function SQLAssistantPage() {
                                 </tr>
                               </thead>
                               <tbody className="bg-white divide-y divide-slate-200">
-                                {msg.results.slice(0, 10).map((row: any, rIdx: number) => (
+                                {msg.results.slice(0, 10).map((row: Record<string, unknown>, rIdx: number) => (
                                   <tr key={rIdx}>
-                                    {Object.values(row).map((val: any, cIdx: number) => (
+                                    {Object.values(row).map((val: unknown, cIdx: number) => (
                                       <td key={cIdx} className="px-4 py-2 text-slate-700 whitespace-nowrap">{String(val)}</td>
                                     ))}
                                   </tr>
@@ -291,12 +314,12 @@ export default function SQLAssistantPage() {
                 value={chatInput}
                 onChange={e => setChatInput(e.target.value)}
                 disabled={!activeDataset}
-                className="flex-1 px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:bg-white outline-none transition-colors"
+                className="flex-1 px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:bg-white outline-none transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               />
               <button 
                 type="submit" 
                 disabled={chatLoading || !chatInput.trim() || !activeDataset} 
-                className="px-6 py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 disabled:opacity-50 transition-colors shadow-sm"
+                className="px-6 py-3 bg-green-600 disabled:bg-slate-100 text-white disabled:text-slate-400 font-bold rounded-xl hover:bg-green-700 transition-colors shadow-sm"
               >
                 Run Query
               </button>

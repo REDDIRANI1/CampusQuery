@@ -4,11 +4,37 @@ import { useState, useEffect } from 'react';
 import { fetchAPI } from '@/lib/api';
 import Link from 'next/link';
 
+interface CourseStat {
+  name: string;
+  available_seats: number;
+  rejections: number;
+}
+
+interface StatsData {
+  total_students: number;
+  allocated_students: number;
+  rejected_students: number;
+  total_available_seats: number;
+  category_wise_allocation: {
+    General: number;
+    OBC: number;
+    SC: number;
+    ST: number;
+  };
+  course_statistics: CourseStat[];
+}
+
+interface ChatMessage {
+  type: 'user' | 'ai';
+  text: string;
+  sql?: string;
+}
+
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<StatsData | null>(null);
   const [running, setRunning] = useState(false);
   const [chatInput, setChatInput] = useState('');
-  const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [chatLoading, setChatLoading] = useState(false);
 
   const loadStats = async () => {
@@ -32,8 +58,8 @@ export default function AdminDashboard() {
       await fetchAPI('/allocation/run', { method: 'POST' });
       await loadStats();
       alert("Allocation completed successfully!");
-    } catch (err: any) {
-      alert("Error: " + err.message);
+    } catch (err) {
+      alert("Error: " + (err as Error).message);
     } finally {
       setRunning(false);
     }
@@ -54,8 +80,8 @@ export default function AdminDashboard() {
         body: JSON.stringify({ question: query })
       });
       setChatHistory(prev => [...prev, { type: 'ai', text: data.answer, sql: data.sql }]);
-    } catch (err: any) {
-      setChatHistory(prev => [...prev, { type: 'ai', text: "Error: " + err.message }]);
+    } catch (err) {
+      setChatHistory(prev => [...prev, { type: 'ai', text: "Error: " + (err as Error).message }]);
     } finally {
       setChatLoading(false);
     }
@@ -115,25 +141,25 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 overflow-y-auto max-h-64">
-             <h2 className="text-xl font-bold text-slate-900 mb-4">Course Statistics</h2>
-             <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200 text-slate-500">
-                    <th className="pb-2 font-medium">Course</th>
-                    <th className="pb-2 font-medium text-right">Available</th>
-                    <th className="pb-2 font-medium text-right">Rejections</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.course_statistics.map((c: any, i: number) => (
-                    <tr key={i} className="border-b border-slate-100 last:border-0">
-                      <td className="py-3 font-medium text-slate-900">{c.name}</td>
-                      <td className="py-3 text-right text-slate-600">{c.available_seats}</td>
-                      <td className="py-3 text-right text-red-500">{c.rejections}</td>
-                    </tr>
-                  ))}
-                </tbody>
-             </table>
+              <h2 className="text-xl font-bold text-slate-900 mb-4">Course Statistics</h2>
+              <table className="w-full text-left text-sm">
+                 <thead>
+                   <tr className="border-b border-slate-200 text-slate-500">
+                     <th className="pb-2 font-medium">Course</th>
+                     <th className="pb-2 font-medium text-right">Available</th>
+                     <th className="pb-2 font-medium text-right">Rejections</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   {stats.course_statistics.map((c: CourseStat, i: number) => (
+                     <tr key={i} className="border-b border-slate-100 last:border-0">
+                       <td className="py-3 font-medium text-slate-900">{c.name}</td>
+                       <td className="py-3 text-right text-slate-600">{c.available_seats}</td>
+                       <td className="py-3 text-right text-red-500">{c.rejections}</td>
+                     </tr>
+                   ))}
+                 </tbody>
+              </table>
           </div>
         </div>
       )}
@@ -167,7 +193,7 @@ export default function AdminDashboard() {
             {chatHistory.length === 0 && (
               <div className="text-center text-slate-400 mt-20">
                 Ask me questions about the allocation results!
-                <br/>(e.g., "How many SC students got into Computer Science?")
+                <br/>(e.g., &quot;How many SC students got into Computer Science?&quot;)
               </div>
             )}
             {chatHistory.map((msg, i) => (

@@ -70,8 +70,8 @@ export default function RegistrationForm() {
       setPref1('');
       setPref2('');
       setPref3('');
-    } catch (err: any) {
-      setError(err.message || 'Registration failed');
+    } catch (err) {
+      setError((err as Error).message || 'Registration failed');
     } finally {
       setLoading(false);
     }

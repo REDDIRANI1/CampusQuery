@@ -3,9 +3,26 @@
 import { useState } from 'react';
 import { fetchAPI } from '@/lib/api';
 
+interface Preference {
+  course_id: string;
+  priority: number;
+}
+
+interface StudentData {
+  id: string;
+  student_id_str: string;
+  name: string;
+  marks: number;
+  category: string;
+  allocation_status: string;
+  allocated_course_id?: string | null;
+  allocated_quota?: string | null;
+  preferences: Preference[];
+}
+
 export default function StudentDashboard() {
   const [studentId, setStudentId] = useState('');
-  const [student, setStudent] = useState<any>(null);
+  const [student, setStudent] = useState<StudentData | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -16,8 +33,8 @@ export default function StudentDashboard() {
     try {
       const data = await fetchAPI(`/students/${studentId}/allocation`);
       setStudent(data);
-    } catch (err: any) {
-      setError(err.message || 'Student not found');
+    } catch (err) {
+      setError((err as Error).message || 'Student not found');
       setStudent(null);
     } finally {
       setLoading(false);
@@ -84,7 +101,7 @@ export default function StudentDashboard() {
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Your Preferences</h3>
             <ul className="space-y-3">
-              {student.preferences.map((p: any) => (
+              {student.preferences.map((p: Preference) => (
                 <li key={p.course_id} className="flex justify-between items-center p-3 border border-slate-100 rounded-lg">
                   <span className="font-medium text-slate-700">Priority {p.priority}</span>
                   <span className="text-slate-500 font-mono text-sm">{p.course_id}</span>

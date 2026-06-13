@@ -25,6 +25,8 @@ Below is a summary of the key endpoints implemented:
   Triggers the Merit-First algorithm. Uses an idempotent reset and `SELECT FOR UPDATE` atomic lock.
 - `GET /api/v1/allocation/stats`
   Returns allocation statistics (Total Students, Allocated, Rejected).
+- `GET /api/v1/allocation/students`
+  Returns a comprehensive list of all students and their allocation status.
 - `POST /api/v1/allocation/ask`
   Accepts a natural language question about the `public` schema and returns an AI-generated SQL query and insights.
 
@@ -35,3 +37,7 @@ Below is a summary of the key endpoints implemented:
   Lists all uploaded datasets.
 - `POST /api/v1/datasets/{dataset_id}/query`
   Accepts a natural language question about a specific dataset, generates SQL, executes it securely in `datasets_schema`, and returns the dataset slice and insights.
+- `GET /api/v1/datasets/{dataset_id}/queries`
+  Retrieves the history of AI queries for a given dataset.
+- `GET /api/v1/datasets/{dataset_id}/export`
+  Exports the dataset or specific query results back to CSV.

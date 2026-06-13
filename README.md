@@ -1,7 +1,7 @@
 # Campus Query
 
 Campus Query is an AI-Powered Student Course Allocation System and intelligent SQL Data Assistant built with a modern stack:
-- **Frontend**: Next.js 15, React, TailwindCSS
+- **Frontend**: Next.js 16, React, TailwindCSS
 - **Backend**: FastAPI, SQLAlchemy, Pydantic, Pandas
 - **Database**: PostgreSQL 15 (via Colima Docker)
 - **AI Integration**: Google GenAI SDK (Gemini Pro/Flash)
@@ -47,3 +47,9 @@ npm run dev
 1. **Student Course Allocation**: Merit-based seat allocation with category-specific quotas (General, OBC, SC, ST).
 2. **Dynamic AI SQL Assistant**: Upload any CSV/Excel file, and immediately query it using natural language. The system dynamically generates an isolated PostgreSQL table.
 3. **Admin Dashboard**: Run allocation logic, view live stats, and ask AI questions about the allocation outcomes safely.
+
+## Screenshots
+- **Student Registration**: ![Student Registration](task1_student_registration.png)
+- **Student Dashboard**: ![Student Dashboard](task1_student_dashboard.png)
+- **Admin Dashboard**: ![Admin Dashboard](task1_admin_dashboard.png)
+- **AI SQL Assistant**: ![AI SQL Assistant](task2_sql_assistant.png)

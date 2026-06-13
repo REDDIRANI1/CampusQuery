@@ -2,7 +2,7 @@
 
 ## 1. Architecture Design
 Campus Query adopts a strict decoupling between the client interface and core logic, utilizing a modern Client-Server architecture:
-- **Frontend**: Next.js 15 App Router providing a reactive, client-side rendered UI utilizing Tailwind CSS for styling.
+- **Frontend**: Next.js 16 App Router providing a reactive, client-side rendered UI utilizing Tailwind CSS for styling.
 - **Backend**: FastAPI serving RESTful JSON APIs, leveraging Python's async capabilities.
 - **Database**: PostgreSQL 15, containerized via Colima Docker for guaranteed local environment consistency.
 

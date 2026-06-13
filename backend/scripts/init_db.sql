@@ -22,11 +22,11 @@ BEGIN
 END
 $$;
 
--- 3. Grant schema usage
-GRANT USAGE ON SCHEMA public TO app_user;
+-- 3. Grant schema usage and creation rights
+GRANT USAGE, CREATE ON SCHEMA public TO app_user;
 GRANT USAGE ON SCHEMA public TO allocation_readonly_user;
 
-GRANT USAGE ON SCHEMA datasets_schema TO app_user;
+GRANT USAGE, CREATE ON SCHEMA datasets_schema TO app_user;
 GRANT USAGE ON SCHEMA datasets_schema TO datasets_readonly_user;
 
 -- 4. Grant table privileges (existing tables)

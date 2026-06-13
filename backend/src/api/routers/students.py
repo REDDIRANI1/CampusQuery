@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field, constr
 from uuid import UUID
@@ -19,7 +19,7 @@ class StudentCreate(BaseModel):
     name: str = Field(..., min_length=1)
     marks: float = Field(..., ge=0, le=100)
     category: CategoryEnum
-    preferences: List[PreferenceCreate] = Field(..., max_length=3)
+    preferences: List[PreferenceCreate] = Field(..., min_length=1, max_length=3)
 
 class PreferenceResponse(BaseModel):
     course_id: UUID
@@ -83,7 +83,7 @@ def register_student(student: StudentCreate, db: Session = Depends(get_db)):
     return db_student
 
 @router.put("/{student_id}/preferences")
-def update_preferences(student_id: UUID, preferences: List[PreferenceCreate], db: Session = Depends(get_db)):
+def update_preferences(student_id: UUID, preferences: List[PreferenceCreate] = Body(..., min_length=1, max_length=3), db: Session = Depends(get_db)):
     state = db.query(SystemState).first()
     if state and state.is_allocation_locked:
         raise HTTPException(status_code=400, detail="Preferences locked because allocation has run.")

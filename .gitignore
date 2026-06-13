@@ -36,3 +36,9 @@ out/
 Thumbs.db
 *.tmp
 .playwright-cli/
+
+# Playwright
+test-results/
+frontend/test-results/
+playwright-report/
+frontend/playwright-report/

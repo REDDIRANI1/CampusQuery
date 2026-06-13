@@ -23,8 +23,21 @@ interface StudentData {
 export default function StudentDashboard() {
   const [studentId, setStudentId] = useState('');
   const [student, setStudent] = useState<StudentData | null>(null);
+  const [courses, setCourses] = useState<Record<string, string>>({});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchAPI('/courses/')
+      .then(data => {
+        const courseMap: Record<string, string> = {};
+        data.forEach((c: any) => {
+          courseMap[c.id] = c.name;
+        });
+        setCourses(courseMap);
+      })
+      .catch(err => console.error("Failed to load courses:", err));
+  }, []);
 
   const handleLookup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,7 +98,9 @@ export default function StudentDashboard() {
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Current Allocation</h3>
             {student.allocation_status === 'Allocated' ? (
               <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-800">You have been allocated a course under the <strong>{student.allocated_quota}</strong> quota.</p>
+                <p className="text-green-800">
+                  You have been allocated to <strong>{student.allocated_course_id ? courses[student.allocated_course_id] || student.allocated_course_id : 'Unknown Course'}</strong> under the <strong>{student.allocated_quota}</strong> quota.
+                </p>
               </div>
             ) : student.allocation_status === 'Rejected' ? (
               <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -104,7 +119,7 @@ export default function StudentDashboard() {
               {student.preferences.map((p: Preference) => (
                 <li key={p.course_id} className="flex justify-between items-center p-3 border border-slate-100 rounded-lg">
                   <span className="font-medium text-slate-700">Priority {p.priority}</span>
-                  <span className="text-slate-500 font-mono text-sm">{p.course_id}</span>
+                  <span className="text-slate-500 text-sm font-medium">{courses[p.course_id] || p.course_id}</span>
                 </li>
               ))}
             </ul>

@@ -11,8 +11,8 @@ class Settings(BaseSettings):
     
     # AI Config
     GEMINI_API_KEY: str
-    GEMINI_MODEL_PRO: str = "gemini-1.5-pro"
-    GEMINI_MODEL_FLASH: str = "gemini-1.5-flash"
+    GEMINI_MODEL_PRO: str = "gemini-2.5-flash"
+    GEMINI_MODEL_FLASH: str = "gemini-2.5-flash"
     
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"]

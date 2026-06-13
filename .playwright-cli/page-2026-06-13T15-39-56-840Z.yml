@@ -1,0 +1,46 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e7]: Campus Query
+      - generic [ref=e8]:
+        - link "Apply for Course" [ref=e9] [cursor=pointer]:
+          - /url: /apply
+        - link "Admin Dashboard" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+        - link "AI SQL Assistant" [ref=e11] [cursor=pointer]:
+          - /url: /sql-assistant
+  - main [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - heading "Student Dashboard" [level=1] [ref=e15]
+        - paragraph [ref=e16]: Check your allocation status and manage preferences.
+      - generic [ref=e18]:
+        - textbox "Enter your Student UUID" [ref=e19]: 6a034ab6-0557-4a08-823d-78724566fe4f
+        - button "Lookup" [ref=e20]
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - heading "John Doe" [level=2] [ref=e34]
+            - paragraph [ref=e35]: "ID: S101 • Category: General • Marks: 95%"
+          - generic [ref=e36]: Allocated
+        - generic [ref=e37]:
+          - heading "Current Allocation" [level=3] [ref=e38]
+          - paragraph [ref=e40]:
+            - text: You have been allocated a course under the
+            - strong [ref=e41]: General
+            - text: quota.
+        - generic [ref=e42]:
+          - heading "Your Preferences" [level=3] [ref=e43]
+          - list [ref=e44]:
+            - listitem [ref=e45]:
+              - generic [ref=e46]: Priority 1
+              - generic [ref=e47]: ffd210c3-9b5c-4477-b18d-4f8a296de08b
+            - listitem [ref=e48]:
+              - generic [ref=e49]: Priority 2
+              - generic [ref=e50]: 763201ea-4f01-42b5-abd0-6b117ef43aa6
+            - listitem [ref=e51]:
+              - generic [ref=e52]: Priority 3
+              - generic [ref=e53]: 096bc609-4c8d-4fc2-b346-e1f525caa9e6
+  - button "Open Next.js Dev Tools" [ref=e26] [cursor=pointer]:
+    - img [ref=e27]
+  - alert [ref=e30]

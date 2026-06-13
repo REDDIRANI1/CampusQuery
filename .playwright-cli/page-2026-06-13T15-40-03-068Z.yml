@@ -1,0 +1,49 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e7]: Campus Query
+      - generic [ref=e8]:
+        - link "Apply for Course" [ref=e9] [cursor=pointer]:
+          - /url: /apply
+        - link "Admin Dashboard" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+        - link "AI SQL Assistant" [ref=e11] [cursor=pointer]:
+          - /url: /sql-assistant
+  - main [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - heading "AI SQL Assistant" [level=1] [ref=e15]
+        - paragraph [ref=e16]: Upload CSV/Excel datasets and query them using natural language.
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - heading "Upload Dataset" [level=2] [ref=e20]
+            - generic [ref=e22] [cursor=pointer]:
+              - img [ref=e23]
+              - generic [ref=e25]: Drop files or Click
+          - generic [ref=e26]:
+            - heading "Your Datasets" [level=2] [ref=e27]
+            - paragraph [ref=e29]: No datasets uploaded yet.
+          - generic [ref=e30]:
+            - heading "Query History" [level=2] [ref=e31]
+            - paragraph [ref=e33]: No history for this dataset.
+        - generic [ref=e34]:
+          - heading "Query Console" [level=2] [ref=e36]:
+            - img [ref=e37]
+            - text: Query Console
+          - generic [ref=e40]: Please upload or select a dataset to start querying.
+          - generic [ref=e42]:
+            - textbox "E.g., What is the average age of students?" [disabled] [ref=e43]
+            - button "Run Query" [disabled] [ref=e44]
+  - generic [ref=e49] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e50]:
+      - img [ref=e51]
+    - generic [ref=e54]:
+      - button "Open issues overlay" [ref=e55]:
+        - generic [ref=e56]:
+          - generic [ref=e57]: "0"
+          - generic [ref=e58]: "1"
+        - generic [ref=e59]: Issue
+      - button "Collapse issues badge" [ref=e60]:
+        - img [ref=e61]
+  - alert [ref=e63]

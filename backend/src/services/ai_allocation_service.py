@@ -48,6 +48,9 @@ def ask_allocation_question(question: str, db: Session):
         if match:
             sql_query = match.group(1).strip()
             
+        # Clean up duplicate LIMIT clauses (e.g., LIMIT 3 LIMIT 100)
+        sql_query = re.sub(r'LIMIT\s+(\d+)\s+LIMIT\s+\d+', r'LIMIT \1', sql_query, flags=re.IGNORECASE)
+            
         # Robust SELECT check
         if not re.match(r'^\s*(?:WITH\s+.*?)?SELECT', sql_query, re.IGNORECASE | re.DOTALL):
             return {

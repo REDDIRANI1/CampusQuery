@@ -51,6 +51,9 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session, da
         if match:
             sql_query = match.group(1).strip()
             
+        # Clean up duplicate LIMIT clauses (e.g., LIMIT 3 LIMIT 100)
+        sql_query = re.sub(r'LIMIT\s+(\d+)\s+LIMIT\s+\d+', r'LIMIT \1', sql_query, flags=re.IGNORECASE)
+            
         # Robust SELECT check (allows WITH clauses)
         if not re.match(r'^\s*(?:WITH\s+.*?)?SELECT', sql_query, re.IGNORECASE | re.DOTALL):
             return {
@@ -61,7 +64,8 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session, da
             }
             
         # 2. Execute query (using datasets_readonly_user via FastAPI dependency)
-        # Add statement timeout for safety
+        # Add statement timeout and set search path for safety
+        db.execute(text("SET search_path TO datasets_schema, public"))
         db.execute(text("SET statement_timeout = 3000"))
         result = db.execute(text(sql_query))
         rows = [dict(row._mapping) for row in result.fetchall()]

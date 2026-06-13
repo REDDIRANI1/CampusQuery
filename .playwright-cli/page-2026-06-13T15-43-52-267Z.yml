@@ -1,0 +1,44 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e7]: Campus Query
+      - generic [ref=e8]:
+        - link "Apply for Course" [ref=e9] [cursor=pointer]:
+          - /url: /apply
+        - link "Admin Dashboard" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+        - link "AI SQL Assistant" [ref=e11] [cursor=pointer]:
+          - /url: /sql-assistant
+  - main [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - heading "AI SQL Assistant" [level=1] [ref=e15]
+        - paragraph [ref=e16]: Upload CSV/Excel datasets and query them using natural language.
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - heading "Upload Dataset" [level=2] [ref=e20]
+            - generic [ref=e22] [cursor=pointer]:
+              - img [ref=e23]
+              - generic [ref=e25]: Drop files or Click
+          - generic [ref=e26]:
+            - heading "Your Datasets" [level=2] [ref=e27]
+            - button "sample_dataset.csv 10 rows" [ref=e29]:
+              - paragraph [ref=e30]: sample_dataset.csv
+              - paragraph [ref=e31]: 10 rows
+          - generic [ref=e32]:
+            - heading "Query History" [level=2] [ref=e33]
+            - paragraph [ref=e35]: No history for this dataset.
+        - generic [ref=e36]:
+          - 'heading "Query Console - Dataset ID: 086a3d70" [level=2] [ref=e38]':
+            - img [ref=e39]
+            - text: "Query Console - Dataset ID: 086a3d70"
+          - generic [ref=e42]:
+            - text: Type a natural language question about your dataset.
+            - text: (e.g., "Show me the top 5 highest marks")
+          - generic [ref=e44]:
+            - textbox "E.g., What is the average age of students?" [ref=e45]
+            - button "Run Query" [disabled] [ref=e46]
+  - button "Open Next.js Dev Tools" [ref=e52] [cursor=pointer]:
+    - img [ref=e53]
+  - alert [ref=e56]

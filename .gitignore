@@ -12,3 +12,4 @@ assigment.md
 # Specify files
 .specify/
 specs/
+.env

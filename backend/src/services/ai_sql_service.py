@@ -16,7 +16,7 @@ def _generate_content_with_retry(client, model_name, prompt):
         contents=prompt
     )
 
-def ask_dataset_question(dynamic_table_name: str, question: str, db: Session, dataset_id: int = None):
+def ask_dataset_question(dynamic_table_name: str, question: str, db: Session, dataset_id: str = None, app_db: Session = None):
     client = genai.Client(api_key=settings.GEMINI_API_KEY)
     
     # 1. Fetch DDL for the specific dataset table
@@ -75,14 +75,14 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session, da
         insight_text = insight_response.text.strip()
 
         # Log query to history
-        if dataset_id:
+        if dataset_id and app_db:
             q_record = DatasetQuery(
                 dataset_id=dataset_id,
                 natural_language_query=question,
                 generated_sql=sql_query
             )
-            db.add(q_record)
-            db.commit()
+            app_db.add(q_record)
+            app_db.commit()
         
         return {
             "sql": sql_query,

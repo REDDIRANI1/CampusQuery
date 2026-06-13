@@ -15,7 +15,7 @@ class DatasetResponse(BaseModel):
     id: UUID
     filename: str
     dynamic_table_name: str
-    row_count: Optional[str]
+    row_count: int
 
     class Config:
         from_attributes = True
@@ -45,7 +45,7 @@ def query_dataset(dataset_id: UUID, request: DatasetQueryRequest, db: Session = 
         raise HTTPException(status_code=404, detail="Dataset not found")
         
     from backend.src.services.ai_sql_service import ask_dataset_question
-    return ask_dataset_question(dataset.dynamic_table_name, request.question, db, dataset.id)
+    return ask_dataset_question(dataset.dynamic_table_name, request.question, db, dataset.id, app_db=app_db)
 
 @router.get("/{dataset_id}/queries")
 def get_dataset_queries(dataset_id: str, db: Session = Depends(get_db)):

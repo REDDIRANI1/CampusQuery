@@ -64,7 +64,7 @@ def process_and_store_dataset(file: UploadFile, db: Session) -> UploadedDataset:
     dataset_record = UploadedDataset(
         filename=file.filename,
         dynamic_table_name=table_name,
-        row_count=str(len(df))
+        row_count=len(df)
     )
     db.add(dataset_record)
     db.commit()

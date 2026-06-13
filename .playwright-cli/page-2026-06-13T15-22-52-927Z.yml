@@ -1,0 +1,37 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e7]: Campus Query
+      - generic [ref=e8]:
+        - link "Apply for Course" [ref=e9] [cursor=pointer]:
+          - /url: /apply
+        - link "Admin Dashboard" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+        - link "AI SQL Assistant" [ref=e11] [cursor=pointer]:
+          - /url: /sql-assistant
+  - main [ref=e12]:
+    - generic [ref=e13]:
+      - heading "Welcome to Campus Query" [level=1] [ref=e14]
+      - paragraph [ref=e15]: The ultimate AI-powered platform for student course allocation and intelligent data analysis.
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - img [ref=e19]
+          - heading "Student Portal" [level=2] [ref=e21]
+          - paragraph [ref=e22]: Register, submit your course preferences, and view your allocation status.
+          - link "Apply Now" [ref=e23] [cursor=pointer]:
+            - /url: /apply
+        - generic [ref=e24]:
+          - img [ref=e26]
+          - heading "Admin Dashboard" [level=2] [ref=e29]
+          - paragraph [ref=e30]: Run allocations, manage courses, and ask AI questions about the allocation results.
+          - link "Admin Login" [ref=e31] [cursor=pointer]:
+            - /url: /admin
+        - generic [ref=e32]:
+          - img [ref=e34]
+          - heading "AI SQL Assistant" [level=2] [ref=e36]
+          - paragraph [ref=e37]: Upload any dataset (CSV/Excel) and query it instantly using natural language.
+          - link "Launch Assistant" [ref=e38] [cursor=pointer]:
+            - /url: /sql-assistant
+  - button "Open Next.js Dev Tools" [ref=e44] [cursor=pointer]:
+    - img [ref=e45]
+  - alert [ref=e48]

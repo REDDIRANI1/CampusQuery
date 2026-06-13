@@ -60,12 +60,16 @@ def register_student(student: StudentCreate, db: Session = Depends(get_db)):
     db.add(db_student)
     db.flush() # get id
     
-    # Check duplicate priorities
+    # Validate duplicate priorities and courses
     priorities = set()
+    course_ids = set()
     for pref in student.preferences:
         if pref.priority in priorities:
-            raise HTTPException(status_code=400, detail="Duplicate priorities in preferences")
+            raise HTTPException(status_code=400, detail="Duplicate priorities in preferences are not allowed.")
+        if pref.course_id in course_ids:
+            raise HTTPException(status_code=400, detail="Duplicate courses in preferences are not allowed.")
         priorities.add(pref.priority)
+        course_ids.add(pref.course_id)
         
         db_pref = StudentPreference(
             student_id=db_student.id,
@@ -88,11 +92,16 @@ def update_preferences(student_id: UUID, preferences: List[PreferenceCreate], db
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
 
+    # Validate duplicate priorities and courses
     priorities = set()
+    course_ids = set()
     for pref in preferences:
         if pref.priority in priorities:
-            raise HTTPException(status_code=400, detail="Duplicate priorities in preferences")
+            raise HTTPException(status_code=400, detail="Duplicate priorities in preferences are not allowed.")
+        if pref.course_id in course_ids:
+            raise HTTPException(status_code=400, detail="Duplicate courses in preferences are not allowed.")
         priorities.add(pref.priority)
+        course_ids.add(pref.course_id)
 
     # Delete old, insert new
     db.query(StudentPreference).filter(StudentPreference.student_id == student.id).delete()

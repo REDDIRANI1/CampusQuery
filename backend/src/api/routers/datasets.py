@@ -6,7 +6,7 @@ from uuid import UUID
 from typing import List, Optional
 
 from backend.src.core.database import get_db, get_datasets_readonly_db
-from backend.src.models.dataset import UploadedDataset
+from backend.src.models.dataset import UploadedDataset, DatasetQuery
 from backend.src.services.dataset_service import process_and_store_dataset
 
 router = APIRouter(prefix="/datasets", tags=["Datasets"])
@@ -45,7 +45,13 @@ def query_dataset(dataset_id: UUID, request: DatasetQueryRequest, db: Session = 
         raise HTTPException(status_code=404, detail="Dataset not found")
         
     from backend.src.services.ai_sql_service import ask_dataset_question
-    return ask_dataset_question(dataset.dynamic_table_name, request.question, db)
+    return ask_dataset_question(dataset.dynamic_table_name, request.question, db, dataset.id)
+
+@router.get("/{dataset_id}/queries")
+def get_dataset_queries(dataset_id: str, db: Session = Depends(get_db)):
+    """Retrieve history of AI queries executed against a specific dataset."""
+    queries = db.query(DatasetQuery).filter(DatasetQuery.dataset_id == dataset_id).order_by(DatasetQuery.created_at.desc()).limit(50).all()
+    return queries
 
 @router.get("/{dataset_id}/export")
 def export_dataset_query(dataset_id: UUID):

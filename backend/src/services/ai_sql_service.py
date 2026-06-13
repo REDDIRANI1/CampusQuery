@@ -2,7 +2,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text, inspect, MetaData, Table
 from google import genai
 from backend.src.core.config import settings
+from backend.src.models.dataset import DatasetQuery
 import logging
+import re
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 metadata = MetaData(schema="datasets_schema")
@@ -14,7 +16,7 @@ def _generate_content_with_retry(client, model_name, prompt):
         contents=prompt
     )
 
-def ask_dataset_question(dynamic_table_name: str, question: str, db: Session):
+def ask_dataset_question(dynamic_table_name: str, question: str, db: Session, dataset_id: int = None):
     client = genai.Client(api_key=settings.GEMINI_API_KEY)
     
     # 1. Fetch DDL for the specific dataset table
@@ -44,17 +46,19 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session):
         
         sql_query = response.text.strip()
         
-        # Strip markdown if LLM disobeyed
-        if sql_query.startswith("```sql"):
-            sql_query = sql_query[6:]
-        if sql_query.startswith("```"):
-            sql_query = sql_query[3:]
-        if sql_query.endswith("```"):
-            sql_query = sql_query[:-3]
-        sql_query = sql_query.strip()
-        
-        if not sql_query.lower().startswith("select"):
-            raise ValueError("Only SELECT queries are allowed.")
+        # Robust markdown stripping
+        match = re.search(r'```(?:sql)?\s*(.*?)\s*```', sql_query, re.IGNORECASE | re.DOTALL)
+        if match:
+            sql_query = match.group(1).strip()
+            
+        # Robust SELECT check (allows WITH clauses)
+        if not re.match(r'^\s*(?:WITH\s+.*?)?SELECT', sql_query, re.IGNORECASE | re.DOTALL):
+            return {
+                "sql": sql_query,
+                "results": None,
+                "insight": None,
+                "error": "Generated query is not a read-only SELECT statement."
+            }
             
         # 2. Execute query (using datasets_readonly_user via FastAPI dependency)
         # Add statement timeout for safety
@@ -68,11 +72,22 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session):
         Results: {rows[:5]}
         """
         insight_response = _generate_content_with_retry(client, settings.GEMINI_MODEL_FLASH, insight_prompt)
+        insight_text = insight_response.text.strip()
+
+        # Log query to history
+        if dataset_id:
+            q_record = DatasetQuery(
+                dataset_id=dataset_id,
+                natural_language_query=question,
+                generated_sql=sql_query
+            )
+            db.add(q_record)
+            db.commit()
         
         return {
             "sql": sql_query,
             "results": rows,
-            "insight": insight_response.text.strip(),
+            "insight": insight_text,
             "chart_config": None # Placeholder for Recharts config
         }
     except Exception as e:

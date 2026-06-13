@@ -71,7 +71,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
           <h3 className="text-slate-500 font-medium mb-2">Total Students</h3>
           <p className="text-4xl font-bold text-slate-900">{stats ? stats.total_students : '-'}</p>
@@ -84,7 +84,59 @@ export default function AdminDashboard() {
           <h3 className="text-slate-500 font-medium mb-2">Rejected</h3>
           <p className="text-4xl font-bold text-red-600">{stats ? stats.rejected_students : '-'}</p>
         </div>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h3 className="text-slate-500 font-medium mb-2">Available Seats</h3>
+          <p className="text-4xl font-bold text-blue-600">{stats ? stats.total_available_seats : '-'}</p>
+        </div>
       </div>
+      
+      {/* Category Wise & Course Stats */}
+      {stats && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <h2 className="text-xl font-bold text-slate-900 mb-4">Category-wise Allocation</h2>
+            <div className="flex gap-4">
+               <div className="flex-1 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-sm text-slate-500 mb-1">General</p>
+                  <p className="text-2xl font-bold">{stats.category_wise_allocation.General}</p>
+               </div>
+               <div className="flex-1 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-sm text-slate-500 mb-1">OBC</p>
+                  <p className="text-2xl font-bold">{stats.category_wise_allocation.OBC}</p>
+               </div>
+               <div className="flex-1 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-sm text-slate-500 mb-1">SC</p>
+                  <p className="text-2xl font-bold">{stats.category_wise_allocation.SC}</p>
+               </div>
+               <div className="flex-1 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-sm text-slate-500 mb-1">ST</p>
+                  <p className="text-2xl font-bold">{stats.category_wise_allocation.ST}</p>
+               </div>
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 overflow-y-auto max-h-64">
+             <h2 className="text-xl font-bold text-slate-900 mb-4">Course Statistics</h2>
+             <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 text-slate-500">
+                    <th className="pb-2 font-medium">Course</th>
+                    <th className="pb-2 font-medium text-right">Available</th>
+                    <th className="pb-2 font-medium text-right">Rejections</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.course_statistics.map((c: any, i: number) => (
+                    <tr key={i} className="border-b border-slate-100 last:border-0">
+                      <td className="py-3 font-medium text-slate-900">{c.name}</td>
+                      <td className="py-3 text-right text-slate-600">{c.available_seats}</td>
+                      <td className="py-3 text-right text-red-500">{c.rejections}</td>
+                    </tr>
+                  ))}
+                </tbody>
+             </table>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Allocation Control */}

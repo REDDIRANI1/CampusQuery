@@ -6,6 +6,7 @@ import { fetchAPI } from '@/lib/api';
 export default function SQLAssistantPage() {
   const [datasets, setDatasets] = useState<any[]>([]);
   const [activeDataset, setActiveDataset] = useState<string | null>(null);
+  const [queryHistory, setQueryHistory] = useState<any[]>([]);
   
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
@@ -29,6 +30,23 @@ export default function SQLAssistantPage() {
   useEffect(() => {
     loadDatasets();
   }, []);
+
+  useEffect(() => {
+    if (activeDataset) {
+      loadHistory(activeDataset);
+    } else {
+      setQueryHistory([]);
+    }
+  }, [activeDataset]);
+
+  const loadHistory = async (id: string) => {
+    try {
+      const data = await fetchAPI(`/datasets/${id}/queries`);
+      setQueryHistory(data);
+    } catch (err) {
+      console.error("Failed to load history", err);
+    }
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -133,7 +151,7 @@ export default function SQLAssistantPage() {
             {uploadError && <p className="mt-2 text-xs text-red-600">{uploadError}</p>}
           </div>
 
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex-1 min-h-0 flex flex-col">
+          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 shrink-0 flex flex-col max-h-64">
             <h2 className="text-lg font-bold text-slate-900 mb-4">Your Datasets</h2>
             <div className="space-y-2 overflow-y-auto flex-1">
               {datasets.map(ds => (
@@ -148,6 +166,20 @@ export default function SQLAssistantPage() {
               ))}
               {datasets.length === 0 && <p className="text-sm text-slate-400 text-center py-4">No datasets uploaded yet.</p>}
             </div>
+          </div>
+          
+          {/* Query History */}
+          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex-1 min-h-0 flex flex-col">
+             <h2 className="text-lg font-bold text-slate-900 mb-4">Query History</h2>
+             <div className="space-y-3 overflow-y-auto flex-1">
+               {queryHistory.map(q => (
+                 <div key={q.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-700">
+                    <p className="font-medium mb-1">"{q.natural_language_query}"</p>
+                    <p className="text-xs text-slate-400 truncate font-mono">{q.generated_sql}</p>
+                 </div>
+               ))}
+               {queryHistory.length === 0 && <p className="text-sm text-slate-400 text-center py-4">No history for this dataset.</p>}
+             </div>
           </div>
         </div>
 

@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+import re
+from tenacity import retry, stop_after_attempt, wait_exponential
 from google import genai
 from backend.src.core.config import settings
 
@@ -41,18 +43,17 @@ def ask_allocation_question(question: str, db: Session):
         
         sql_query = response.text.strip()
         
-        # Strip markdown if LLM disobeyed
-        if sql_query.startswith("```sql"):
-            sql_query = sql_query[6:]
-        if sql_query.startswith("```"):
-            sql_query = sql_query[3:]
-        if sql_query.endswith("```"):
-            sql_query = sql_query[:-3]
-        sql_query = sql_query.strip()
-        
-        # Security: Enforce READ ONLY on the application side just in case
-        if not sql_query.lower().startswith("select"):
-            raise ValueError("Only SELECT queries are allowed.")
+        # Robust markdown stripping
+        match = re.search(r'```(?:sql)?\s*(.*?)\s*```', sql_query, re.IGNORECASE | re.DOTALL)
+        if match:
+            sql_query = match.group(1).strip()
+            
+        # Robust SELECT check
+        if not re.match(r'^\s*(?:WITH\s+.*?)?SELECT', sql_query, re.IGNORECASE | re.DOTALL):
+            return {
+                "answer": "Error: Generated query is not a read-only SELECT statement.",
+                "sql": sql_query
+            }
             
         # Execute query
         result = db.execute(text(sql_query))

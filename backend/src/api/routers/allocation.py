@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from backend.src.core.database import get_db, get_allocation_readonly_db
 from backend.src.services.allocation import run_allocation, get_allocation_stats
@@ -14,6 +14,9 @@ class AllocationStats(BaseModel):
     total_students: int
     allocated_students: int
     rejected_students: int
+    total_available_seats: int
+    course_statistics: List[Dict[str, Any]]
+    category_wise_allocation: Dict[str, int]
 
 @router.post("/run", response_model=AllocationStats)
 def trigger_allocation(db: Session = Depends(get_db)):

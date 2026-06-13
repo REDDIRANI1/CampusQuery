@@ -23,6 +23,7 @@ export default function RegistrationForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [createdUuid, setCreatedUuid] = useState('');
 
   useEffect(() => {
     fetchAPI('/courses/')
@@ -55,11 +56,12 @@ export default function RegistrationForm() {
     };
 
     try {
-      await fetchAPI('/students/', {
+      const resp = await fetchAPI('/students/', {
         method: 'POST',
         body: JSON.stringify(payload)
       });
       setSuccess(true);
+      setCreatedUuid(resp.id);
       // Reset form
       setStudentIdStr('');
       setName('');
@@ -80,7 +82,16 @@ export default function RegistrationForm() {
       <h2 className="text-2xl font-bold text-slate-900 mb-6">Student Registration</h2>
       
       {error && <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">{error}</div>}
-      {success && <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-lg">Registration successful! Your application has been recorded.</div>}
+      {success && (
+        <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg">
+          <p className="font-bold text-lg mb-2">Registration successful!</p>
+          <p>Your application has been recorded.</p>
+          <div className="mt-4 p-3 bg-white rounded border border-green-100">
+            <p className="text-sm text-slate-500 mb-1">Your Dashboard Login UUID (Save this!):</p>
+            <p className="font-mono text-lg font-bold text-slate-900 select-all">{createdUuid}</p>
+          </div>
+        </div>
+      )}
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

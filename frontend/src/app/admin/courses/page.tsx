@@ -22,6 +22,7 @@ export default function CourseManagement() {
   const [obcSeats, setObcSeats] = useState(0);
   const [scSeats, setScSeats] = useState(0);
   const [stSeats, setStSeats] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const loadCourses = async () => {
     try {
@@ -38,6 +39,7 @@ export default function CourseManagement() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await fetchAPI('/courses/', {
         method: 'POST',
@@ -58,6 +60,8 @@ export default function CourseManagement() {
     } catch (err) {
       console.error(err);
       alert("Failed to create course");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -101,8 +105,8 @@ export default function CourseManagement() {
                   className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
               </div>
             </div>
-            <button type="submit" className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
-              Create Course
+            <button type="submit" disabled={loading} className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-70">
+              {loading ? 'Creating...' : 'Create Course'}
             </button>
           </form>
         </div>

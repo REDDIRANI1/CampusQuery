@@ -57,3 +57,26 @@ def get_dataset_queries(dataset_id: str, db: Session = Depends(get_db)):
 def export_dataset_query(dataset_id: UUID):
     # Bonus feature placeholder
     return {"message": "Export feature pending implementation"}
+
+@router.delete("/{dataset_id}")
+def delete_dataset(dataset_id: UUID, db: Session = Depends(get_db)):
+    """Delete a dataset, its query history, and drop its dynamic table."""
+    dataset = db.query(UploadedDataset).filter(UploadedDataset.id == dataset_id).first()
+    if not dataset:
+        raise HTTPException(status_code=404, detail="Dataset not found")
+    
+    # 1. Drop the dynamic table
+    try:
+        drop_statement = text(f"DROP TABLE IF EXISTS datasets_schema.\"{dataset.dynamic_table_name}\" CASCADE")
+        db.execute(drop_statement)
+    except Exception as e:
+        print(f"Error dropping table {dataset.dynamic_table_name}: {e}")
+        # Proceed with metadata deletion anyway
+
+    # 2. Delete associated queries
+    db.query(DatasetQuery).filter(DatasetQuery.dataset_id == dataset_id).delete()
+    
+    # 3. Delete dataset record
+    db.delete(dataset)
+    db.commit()
+    return {"message": "Dataset deleted successfully"}

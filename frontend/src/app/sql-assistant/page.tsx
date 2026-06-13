@@ -101,6 +101,27 @@ export default function SQLAssistantPage() {
     }
   };
 
+  const handleDeleteDataset = async (e: React.MouseEvent, datasetId: string) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this dataset? This will drop the table and delete all query history.")) return;
+    
+    try {
+      const response = await fetch(`http://localhost:8000/api/v1/datasets/${datasetId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete dataset');
+      }
+      
+      if (activeDataset === datasetId) {
+        setActiveDataset(null);
+      }
+      await loadDatasets();
+    } catch (err) {
+      alert((err as Error).message);
+    }
+  };
+
   const handleAskAI = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim() || !activeDataset) return;
@@ -177,14 +198,22 @@ export default function SQLAssistantPage() {
             <h2 className="text-lg font-bold text-slate-900 mb-4">Your Datasets</h2>
             <div className="space-y-2 overflow-y-auto flex-1">
               {datasets.map(ds => (
-                <button 
-                  key={ds.id} 
-                  onClick={() => setActiveDataset(ds.id)}
-                  className={`w-full text-left px-4 py-3 rounded-xl border transition-colors ${activeDataset === ds.id ? 'bg-blue-50 border-blue-200 text-blue-900' : 'bg-white border-slate-100 hover:bg-slate-50 text-slate-700'}`}
-                >
-                  <p className="font-medium truncate">{ds.filename}</p>
-                  <p className="text-xs text-slate-500">{ds.row_count} rows</p>
-                </button>
+                <div key={ds.id} className="relative group mb-2">
+                  <button 
+                    onClick={() => setActiveDataset(ds.id)}
+                    className={`w-full text-left px-4 py-3 rounded-xl border transition-colors ${activeDataset === ds.id ? 'bg-blue-50 border-blue-200 text-blue-900' : 'bg-white border-slate-100 hover:bg-slate-50 text-slate-700'}`}
+                  >
+                    <p className="font-medium truncate pr-8">{ds.filename}</p>
+                    <p className="text-xs text-slate-500">{ds.row_count} rows</p>
+                  </button>
+                  <button
+                    onClick={(e) => handleDeleteDataset(e, ds.id)}
+                    className="absolute right-3 top-3.5 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                    title="Delete Dataset"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                  </button>
+                </div>
               ))}
               {datasets.length === 0 && <p className="text-sm text-slate-400 text-center py-4">No datasets uploaded yet.</p>}
             </div>

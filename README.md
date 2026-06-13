@@ -33,7 +33,7 @@ source .venv/bin/activate
 pip install -r requirements.txt # (or install dependencies manually if needed)
 uvicorn src.main:app --reload --port 8000
 ```
-> Note: Ensure your `.env` file is present in the root directory with `GEMINI_API_KEY` and the three database connection URLs.
+> Note: A `.env.example` file is provided in the root directory. Copy it to `.env` (`cp .env.example .env`) and insert your actual `GEMINI_API_KEY`. The database URLs are pre-configured to match the Docker setup.
 
 ### 3. Frontend Setup
 Navigate to the `frontend` directory, install dependencies, and run the Next.js development server:
@@ -47,6 +47,11 @@ npm run dev
 1. **Student Course Allocation**: Merit-based seat allocation with category-specific quotas (General, OBC, SC, ST).
 2. **Dynamic AI SQL Assistant**: Upload any CSV/Excel file, and immediately query it using natural language. The system dynamically generates an isolated PostgreSQL table.
 3. **Admin Dashboard**: Run allocation logic, view live stats, and ask AI questions about the allocation outcomes safely.
+
+## Documentation
+For a deeper dive into the system design and endpoints, please refer to:
+- [Architecture Document](./docs/architecture.md)
+- [API Documentation](./docs/API_Documentation.md)
 
 ## Screenshots
 - **Student Registration**: ![Student Registration](task1_student_registration.png)

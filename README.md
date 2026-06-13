@@ -24,6 +24,12 @@ Start the PostgreSQL database (this will automatically seed the roles and schema
 docker compose up -d
 ```
 
+To load the initial database schema and comprehensive seed data (useful for testing all allocation scenarios):
+```bash
+cat schema.sql | docker compose exec -T db psql -U postgres -d student_portal_db
+cat backend/scripts/seed_data.sql | docker compose exec -T db psql -U postgres -d student_portal_db
+```
+
 ### 2. Backend Setup
 Navigate to the `backend` directory, activate the virtual environment, and run the server:
 ```bash

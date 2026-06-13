@@ -9,7 +9,7 @@ export function middleware(req: NextRequest) {
     const [user, pwd] = atob(authValue).split(':');
 
     // Hardcoded dummy login for public testing
-    if (user === 'admin' && pwd === 'password123') {
+    if (user === 'rani' && pwd === 'assignment@123') {
       return NextResponse.next();
     }
   }

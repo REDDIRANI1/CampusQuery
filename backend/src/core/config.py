@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     GEMINI_MODEL_FLASH: str = "gemini-2.5-flash"
     
     # CORS
-    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"]
+    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002", "http://localhost:3005", "http://127.0.0.1:3000", "http://127.0.0.1:3005"]
     
     model_config = SettingsConfigDict(env_file=(".env", "../.env"), env_file_encoding="utf-8", extra="ignore")
 

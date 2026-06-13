@@ -226,7 +226,7 @@ export default function AdminDashboard() {
                 onChange={e => setChatInput(e.target.value)}
                 className="flex-1 px-4 py-2 border border-slate-300 rounded-full focus:ring-2 focus:ring-purple-500 outline-none"
               />
-              <button type="submit" disabled={chatLoading || !chatInput.trim()} className="p-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 disabled:opacity-50">
+              <button type="submit" disabled={chatLoading || !chatInput.trim()} className="p-2 bg-purple-600 disabled:bg-slate-100 text-white disabled:text-slate-400 rounded-full hover:bg-purple-700 transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
               </button>
             </form>

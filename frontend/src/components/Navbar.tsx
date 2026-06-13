@@ -1,10 +1,16 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const pathname = usePathname();
+
+  const navItems = [
+    { name: 'Apply for Course', href: '/apply' },
+    { name: 'Admin Dashboard', href: '/admin' },
+    { name: 'AI SQL Assistant', href: '/sql-assistant' }
+  ];
 
   return (
     <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
@@ -12,41 +18,27 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+              <Link href="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
                 Campus Query
-              </span>
+              </Link>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link
-                href="/apply"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
-                  pathname === '/apply'
-                    ? 'border-blue-600 text-slate-900'
-                    : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
-                }`}
-              >
-                Apply for Course
-              </Link>
-              <Link
-                href="/admin"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
-                  pathname === '/admin'
-                    ? 'border-blue-600 text-slate-900'
-                    : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
-                }`}
-              >
-                Admin Dashboard
-              </Link>
-              <Link
-                href="/sql-assistant"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
-                  pathname === '/sql-assistant'
-                    ? 'border-blue-600 text-slate-900'
-                    : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
-                }`}
-              >
-                AI SQL Assistant
-              </Link>
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200 ${
+                      isActive
+                        ? 'border-blue-600 text-blue-600 font-semibold'
+                        : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>

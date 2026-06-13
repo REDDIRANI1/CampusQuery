@@ -48,7 +48,7 @@ cd frontend
 npm install
 npm run dev
 ```
-> Note: Admin routes are protected by Basic Authentication. Ensure you set `ADMIN_USER` and `ADMIN_PASSWORD` in your root `.env` file (see `.env.example` for the recommended test credentials: `rani` / `assignment@123`). If left unset, the defaults are `admin` / `password123`.
+> Note: Admin routes are protected by Basic Authentication. Ensure you create a `frontend/.env.local` file and set `ADMIN_USER` and `ADMIN_PASSWORD` there (refer to the root `.env.example` for recommended test credentials: `rani` / `assignment@123`). If left unset, the defaults are `admin` / `password123`.
 
 ## Features
 1. **Student Course Allocation**: Merit-based seat allocation with category-specific quotas (General, OBC, SC, ST).

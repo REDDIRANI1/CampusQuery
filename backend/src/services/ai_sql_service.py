@@ -2,8 +2,17 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text, inspect, MetaData, Table
 from google import genai
 from backend.src.core.config import settings
+import logging
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 metadata = MetaData(schema="datasets_schema")
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+def _generate_content_with_retry(client, model_name, prompt):
+    return client.models.generate_content(
+        model=model_name,
+        contents=prompt
+    )
 
 def ask_dataset_question(dynamic_table_name: str, question: str, db: Session):
     client = genai.Client(api_key=settings.GEMINI_API_KEY)
@@ -31,10 +40,7 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session):
     """
     
     try:
-        response = client.models.generate_content(
-            model=settings.GEMINI_MODEL_PRO,
-            contents=prompt
-        )
+        response = _generate_content_with_retry(client, settings.GEMINI_MODEL_PRO, prompt)
         
         sql_query = response.text.strip()
         
@@ -61,10 +67,7 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session):
         Provide a 1-sentence insight about these data results for the question: "{question}".
         Results: {rows[:5]}
         """
-        insight_response = client.models.generate_content(
-            model=settings.GEMINI_MODEL_FLASH, # Flash is faster for simple insights
-            contents=insight_prompt
-        )
+        insight_response = _generate_content_with_retry(client, settings.GEMINI_MODEL_FLASH, insight_prompt)
         
         return {
             "sql": sql_query,
@@ -73,10 +76,11 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session):
             "chart_config": None # Placeholder for Recharts config
         }
     except Exception as e:
+        fallback_msg = "I couldn't process that query correctly. Try asking a simpler question, or using specific keywords like 'count', 'average', or 'list'."
         return {
             "error": str(e),
             "sql": None,
             "results": [],
-            "insight": "Failed to process query.",
+            "insight": fallback_msg,
             "chart_config": None
         }

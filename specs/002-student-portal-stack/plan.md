@@ -31,6 +31,7 @@ Build an AI-powered student course allocation system and a generic natural langu
   - `allocation_readonly_user` (for Task 1) has read-only access to `public` schema only.
 - **Query Safeguards**: Strict sanitization of uploaded CSV headers to `^[a-z0-9_]+$`. All AI-generated SQL queries must have a statement timeout of 3s (`SET statement_timeout = 3000`) and a strict result limit of 100.
 - **Failures**: Unrecognized or invalid queries must fallback to suggestions based on column schemas.
+- **Migrations**: Database schema creation is managed automatically on backend startup using SQLAlchemy's `Base.metadata.create_all` during development. No complex migration tool (like Alembic) is required for this assessment context.
 
 **Scale/Scope**: Two integrated sub-systems, ~10 API endpoints, ~5 screens, ~4 core database entities + dynamic tables.
 

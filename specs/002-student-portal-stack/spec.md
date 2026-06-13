@@ -127,7 +127,7 @@ The AI Assistant and analytics dashboard MUST support both calculations, using d
 - **Query Safeguards**: AI queries must be appended with a strict `LIMIT 100`. A database-level statement timeout (`SET statement_timeout = 3000`) is executed before running AI SQL.
 
 #### 5. AI API Failure & Fallback Policies
-- **Rate-Limits & Timeouts**: Gemini API calls timeout at 5 seconds. The system implements a maximum of 3 retries with exponential backoff (initial delay 1s, backoff factor 2, max delay 10s).
+- **Rate-Limits & Timeouts**: Gemini API calls timeout at 3 seconds. The system implements a maximum of 3 retries with exponential backoff (initial delay 1s, backoff factor 2, max delay 10s).
 - **Vague Prompts & Recovery**: If a prompt is vague, cannot be converted to SQL, or SQL execution fails, the system returns a standard JSON error, prompts the user to rephrase, and suggests 2-3 sample queries based on the target schema.
 
 ## Requirements *(mandatory)*
@@ -149,6 +149,8 @@ The AI Assistant and analytics dashboard MUST support both calculations, using d
 - **FR-013**: System MUST gracefully handle unrecognized natural language prompts by asking the user to rephrase and suggesting 2-3 sample queries based on the schema.
 - **FR-014**: System MUST calculate course rejection rates dynamically using preference-based and first-preference calculations.
 - **FR-015**: System MUST explicitly track student allocation status (`Pending`, `Allocated`, `Rejected`) to differentiate between unallocated and rejected students.
+- **FR-016**: System MUST allow users to export query results and datasets.
+- **FR-017**: System MUST track and display query history of past AI interactions in a sidebar.
 
 ### Key Entities *(include if feature involves data)*
 

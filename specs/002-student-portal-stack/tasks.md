@@ -92,8 +92,8 @@
 - [X] T020 [US5] Implement Pandas CSV/Excel parser and dynamic table creator in backend/src/services/dataset_service.py (Must use openpyxl, strict regex header sanitization, isolate in `datasets_schema`, MUST use run_in_threadpool or sync def to prevent asyncio event loop blocking from Pandas)
 - [X] T020a [US5] Ensure default privileges are configured so `datasets_readonly_user` automatically gets SELECT on dynamically created tables in `datasets_schema` (using ALTER DEFAULT PRIVILEGES)
 - [X] T021 [US5] Implement Gemini SQL generation and execution service in backend/src/services/ai_sql_service.py (Inject dynamic table DDL into prompt context, explicitly parse/strip markdown ```sql wrapping from LLM output, enforce SQL LIMIT 100, enforce 3s statement timeout, execute using `datasets_readonly_user` connection, generate AI insights/chart configs)
-- [ ] T021a [US5] Implement exponential backoff and retry logic for Gemini API rate limits
-- [ ] T021b [US5] Implement fallback logic to suggest sample queries when prompts are vague/unrecognized
+- [X] T021a [US5] Implement exponential backoff and retry logic for Gemini API rate limits
+- [X] T021b [US5] Implement fallback logic to suggest sample queries when prompts are vague/unrecognized
 - [X] T022 [US5] Implement Upload endpoint POST /api/v1/datasets/upload in backend/src/api/routers/datasets.py
 - [X] T023 [US5] Implement Query endpoint POST /api/v1/datasets/{dataset_id}/query in backend/src/api/routers/datasets.py
 - [X] T023a [US5] Implement Export endpoint GET /api/v1/datasets/{dataset_id}/export in backend/src/api/routers/datasets.py

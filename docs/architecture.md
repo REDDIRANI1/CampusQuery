@@ -19,7 +19,7 @@ We enforce strict security at the database connection level by utilizing three d
 ## 3. AI Integration Approach
 Google Gemini (via GenAI SDK) is integrated as a secure SQL synthesis engine.
 - **Task 1 (Allocation AI)**: The schema DDL for `courses` and `students` is statically injected into the prompt. The AI generates a `SELECT` query, which is sanitized, stripped of markdown, and executed via the `allocation_readonly_user` pool.
-- **Task 2 (Dataset AI)**: Dynamic table DDL is fetched via SQLAlchemy reflection. We use `gemini-1.5-pro` for SQL synthesis and a subsequent `gemini-1.5-flash` call on the returned data slice for rapid insights.
+- **Task 2 (Dataset AI)**: Dynamic table DDL is fetched via SQLAlchemy reflection. We use `gemini-2.5-flash` for both SQL synthesis and for generating rapid insights on the returned data slice.
 
 ## 4. Security Considerations
 - **SQL Injection**: Prevented by utilizing secure connections, regex sanitization of uploaded dataset headers, and ensuring `SELECT` prefixes.

@@ -49,15 +49,15 @@
 
 - [X] T010 [P] [US1] Create Course model (with seat constraints) and SystemState model in backend/src/models/course.py
 - [X] T010a [US1] Implement Course Management API (GET/POST /api/v1/courses) in backend/src/api/routers/courses.py
-- [ ] T010b [US1] Create Course Management UI for Admins in frontend/src/app/admin/courses/page.tsx
+- [X] T010b [US1] Create Course Management UI for Admins in frontend/src/app/admin/courses/page.tsx
 - [X] T011 [P] [US1] Create Student and Preferences models in backend/src/models/student.py
 - [X] T012 [US1] Implement Student Registration endpoint POST /api/v1/students in backend/src/api/routers/students.py
 - [X] T012a [US1] Implement Student Preference Update endpoint PUT /api/v1/students/{id}/preferences in backend/src/api/routers/students.py
 - [X] T012b [US1] Implement Student Allocation Status endpoint GET /api/v1/students/{id}/allocation in backend/src/api/routers/students.py
-- [ ] T013 [P] [US1] Create Student Registration Form component in frontend/src/components/RegistrationForm.tsx
-- [ ] T014 [US1] Integrate Registration Form with API in frontend/src/app/apply/page.tsx
-- [ ] T014a [US1] Add Preference Update capability to frontend interface
-- [ ] T014b [US1] Create Student Dashboard UI for students to view their allocated course status
+- [X] T013 [P] [US1] Create Student Registration Form component in frontend/src/components/RegistrationForm.tsx
+- [X] T014 [US1] Integrate Registration Form with API in frontend/src/app/apply/page.tsx
+- [X] T014a [US1] Add Preference Update capability to frontend interface
+- [X] T014b [US1] Create Student Dashboard UI for students to view their allocated course status
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -73,8 +73,8 @@
 
 - [X] T015 [US2] Implement Allocation Algorithm service in backend/src/services/allocation.py (Idempotent run reset; Process Student-by-Student by merit; top reserved students consume General seats; compute rejection counts)
 - [X] T016 [US2] Implement Allocation endpoint POST /api/v1/allocation/run in backend/src/api/routers/allocation.py (MUST use SELECT FOR UPDATE atomic lock on system_state to prevent race conditions)
-- [ ] T017 [P] [US2] Create Admin Action button component in frontend/src/components/AdminAllocationControl.tsx
-- [ ] T018 [US2] Integrate Admin Control in frontend/src/app/admin/page.tsx
+- [X] T017 [P] [US2] Create Admin Action button component in frontend/src/components/AdminAllocationControl.tsx
+- [X] T018 [US2] Integrate Admin Control in frontend/src/app/admin/page.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -97,10 +97,10 @@
 - [X] T022 [US5] Implement Upload endpoint POST /api/v1/datasets/upload in backend/src/api/routers/datasets.py
 - [X] T023 [US5] Implement Query endpoint POST /api/v1/datasets/{dataset_id}/query in backend/src/api/routers/datasets.py
 - [X] T023a [US5] Implement Export endpoint GET /api/v1/datasets/{dataset_id}/export in backend/src/api/routers/datasets.py
-- [ ] T024 [P] [US5] Create Dataset Upload UI in frontend/src/components/DatasetUpload.tsx
-- [ ] T025 [P] [US5] Create AI Chat UI for querying datasets in frontend/src/components/AIChat.tsx (Include skeleton loaders, Recharts graphs, export buttons, and React Error Boundaries)
-- [ ] T025a [P] [US5] Create Query History Sidebar component to track past AI interactions in frontend/src/components/QueryHistory.tsx
-- [ ] T026 [US5] Integrate Dataset and Chat components in frontend/src/app/sql-assistant/page.tsx
+- [X] T024 [P] [US5] Create Dataset Upload UI in frontend/src/components/DatasetUpload.tsx
+- [X] T025 [P] [US5] Create AI Chat UI for querying datasets in frontend/src/components/AIChat.tsx (Include skeleton loaders, Recharts graphs, export buttons, and React Error Boundaries)
+- [X] T025a [P] [US5] Create Query History Sidebar component to track past AI interactions in frontend/src/components/QueryHistory.tsx
+- [X] T026 [US5] Integrate Dataset and Chat components in frontend/src/app/sql-assistant/page.tsx
 
 **Checkpoint**: At this point, User Story 5 should be fully functional independently
 
@@ -116,8 +116,8 @@
 
 - [X] T027 [US3] Implement Stats endpoint GET /api/v1/allocation/stats in backend/src/api/routers/allocation.py
 - [X] T027a [US3] Implement Student List endpoint GET /api/v1/allocations in backend/src/api/routers/allocation.py
-- [ ] T028 [P] [US3] Create Stats Card components in frontend/src/components/StatsCards.tsx
-- [ ] T029 [US3] Integrate Dashboard Data in frontend/src/app/admin/page.tsx
+- [X] T028 [P] [US3] Create Stats Card components in frontend/src/components/StatsCards.tsx
+- [X] T029 [US3] Integrate Dashboard Data in frontend/src/app/admin/page.tsx
 
 ---
 
@@ -131,8 +131,8 @@
 
 - [X] T030 [US4] Implement Allocation AI Assistant service in backend/src/services/ai_allocation_service.py (Inject public schema DDL into prompt context)
 - [X] T031 [US4] Implement Ask AI endpoint POST /api/v1/allocation/ask in backend/src/api/routers/allocation.py
-- [ ] T032 [P] [US4] Create Allocation AI Chat interface in frontend/src/components/AllocationChat.tsx
-- [ ] T033 [US4] Integrate Allocation AI Chat in frontend/src/app/admin/page.tsx
+- [X] T032 [P] [US4] Create Allocation AI Chat interface in frontend/src/components/AllocationChat.tsx
+- [X] T033 [US4] Integrate Allocation AI Chat in frontend/src/app/admin/page.tsx
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -143,14 +143,14 @@
 **Purpose**: Improvements that affect multiple user stories
 
 - [X] T034 [P] Setup specific AI readonly PostgreSQL roles via script in backend/scripts/init_db.sql (Create `allocation_readonly_user` for `public` schema and `datasets_readonly_user` for `datasets_schema`)
-- [ ] T035 [P] Deliverable: Generate Database Schema (PostgreSQL schema.sql dump or ER diagram)
-- [ ] T036 [P] Deliverable: Write README File with setup instructions to run the project
-- [ ] T037 [P] Deliverable: Generate API Documentation detailing the API endpoints developed
-- [ ] T038 [P] Deliverable: Prepare Sample Dataset(s) used for testing or demonstrating the applications
-- [ ] T039 [P] Deliverable: Capture Screenshots or Demo Video as visual proof of the working applications
-- [ ] T040 [P] Deliverable: Write Brief Architecture Document explaining Architecture Design, Database Design Decisions, AI Integration Approach, Security Considerations, and Challenges Faced and Solutions Implemented
-- [ ] T041 Code cleanup and refactoring
-- [ ] T042 Run quickstart.md validation
+- [X] T035 [P] Deliverable: Generate Database Schema (PostgreSQL schema.sql dump or ER diagram)
+- [X] T036 [P] Deliverable: Write README File with setup instructions to run the project
+- [X] T037 [P] Deliverable: Generate API Documentation detailing the API endpoints developed
+- [X] T038 [P] Deliverable: Prepare Sample Dataset(s) used for testing or demonstrating the applications
+- [X] T039 [P] Deliverable: Capture Screenshots or Demo Video as visual proof of the working applications
+- [X] T040 [P] Deliverable: Write Brief Architecture Document explaining Architecture Design, Database Design Decisions, AI Integration Approach, Security Considerations, and Challenges Faced and Solutions Implemented
+- [X] T041 Code cleanup and refactoring
+- [X] T042 Run quickstart.md validation
 
 ---
 

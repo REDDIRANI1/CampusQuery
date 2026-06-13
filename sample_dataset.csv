@@ -1,0 +1,11 @@
+student_id,name,age,marks,category,department,admission_year
+STU001,John Doe,20,85.5,General,Computer Science,2023
+STU002,Jane Smith,21,92.0,OBC,Mechanical,2022
+STU003,Rahul Kumar,19,78.5,SC,Electrical,2023
+STU004,Priya Singh,20,88.0,General,Civil,2022
+STU005,Amit Patel,22,95.5,ST,Computer Science,2021
+STU006,Neha Gupta,20,81.0,OBC,Electrical,2023
+STU007,Vikram Sharma,21,89.5,General,Mechanical,2022
+STU008,Pooja Verma,19,76.0,SC,Civil,2023
+STU009,Rohan Das,20,83.5,ST,Computer Science,2022
+STU010,Kavita Yadav,21,91.0,OBC,Electrical,2021

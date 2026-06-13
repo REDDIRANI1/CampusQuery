@@ -1,0 +1,86 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e7]: Campus Query
+      - generic [ref=e8]:
+        - link "Apply for Course" [ref=e9] [cursor=pointer]:
+          - /url: /apply
+        - link "Admin Dashboard" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+        - link "AI SQL Assistant" [ref=e11] [cursor=pointer]:
+          - /url: /sql-assistant
+  - main [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - heading "Admin Dashboard" [level=1] [ref=e15]
+        - link "Manage Courses" [ref=e16] [cursor=pointer]:
+          - /url: /admin/courses
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - heading "Total Students" [level=3] [ref=e19]
+          - paragraph [ref=e20]: "8"
+        - generic [ref=e21]:
+          - heading "Allocated" [level=3] [ref=e22]
+          - paragraph [ref=e23]: "8"
+        - generic [ref=e24]:
+          - heading "Rejected" [level=3] [ref=e25]
+          - paragraph [ref=e26]: "0"
+        - generic [ref=e27]:
+          - heading "Available Seats" [level=3] [ref=e28]
+          - paragraph [ref=e29]: "192"
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - heading "Category-wise Allocation" [level=2] [ref=e32]
+          - generic [ref=e33]:
+            - generic [ref=e34]:
+              - paragraph [ref=e35]: General
+              - paragraph [ref=e36]: "8"
+            - generic [ref=e37]:
+              - paragraph [ref=e38]: OBC
+              - paragraph [ref=e39]: "0"
+            - generic [ref=e40]:
+              - paragraph [ref=e41]: SC
+              - paragraph [ref=e42]: "0"
+            - generic [ref=e43]:
+              - paragraph [ref=e44]: ST
+              - paragraph [ref=e45]: "0"
+        - generic [ref=e46]:
+          - heading "Course Statistics" [level=2] [ref=e47]
+          - table [ref=e48]:
+            - rowgroup [ref=e49]:
+              - row "Course Available Rejections" [ref=e50]:
+                - columnheader "Course" [ref=e51]
+                - columnheader "Available" [ref=e52]
+                - columnheader "Rejections" [ref=e53]
+            - rowgroup [ref=e54]:
+              - row "Mechanical Engineering 39 0" [ref=e95]:
+                - cell "Mechanical Engineering" [ref=e96]
+                - cell "39" [ref=e97]
+                - cell "0" [ref=e58]
+              - row "Electrical Engineering 59 0" [ref=e98]:
+                - cell "Electrical Engineering" [ref=e60]
+                - cell "59" [ref=e99]
+                - cell "0" [ref=e62]
+              - row "Computer Science 94 0" [ref=e100]:
+                - cell "Computer Science" [ref=e101]
+                - cell "94" [ref=e102]
+                - cell "0" [ref=e66]
+      - generic [ref=e67]:
+        - generic [ref=e68]:
+          - heading "Run Allocation" [level=2] [ref=e69]
+          - paragraph [ref=e70]: Executing the allocation algorithm will assign courses based on merit and category reservations. It will lock the system preventing new registrations.
+          - button "Execute Allocation" [ref=e71]
+        - generic [ref=e72]:
+          - heading "Allocation AI Assistant" [level=2] [ref=e74]:
+            - img [ref=e75]
+            - text: Allocation AI Assistant
+          - generic [ref=e77]:
+            - paragraph [ref=e105]: Show category-wise allocation summary.
+            - generic [ref=e107]: Analyzing database...
+          - generic [ref=e80]:
+            - textbox "Ask a question..." [ref=e81]
+            - button [disabled] [ref=e82]:
+              - img [ref=e83]
+  - button "Open Next.js Dev Tools" [ref=e90] [cursor=pointer]:
+    - img [ref=e91]
+  - alert [ref=e94]

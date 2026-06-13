@@ -1,0 +1,43 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e7]: Campus Query
+      - generic [ref=e8]:
+        - link "Apply for Course" [ref=e9] [cursor=pointer]:
+          - /url: /apply
+        - link "Admin Dashboard" [ref=e10] [cursor=pointer]:
+          - /url: /admin
+        - link "AI SQL Assistant" [ref=e11] [cursor=pointer]:
+          - /url: /sql-assistant
+  - main [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - heading "Student Dashboard" [level=1] [ref=e15]
+        - paragraph [ref=e16]: Check your allocation status and manage preferences.
+      - generic [ref=e18]:
+        - textbox "Enter your Student UUID" [ref=e19]: 6a034ab6-0557-4a08-823d-78724566fe4f
+        - button "Lookup" [ref=e20]
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - heading "John Doe" [level=2] [ref=e34]
+            - paragraph [ref=e35]: "ID: S101 • Category: General • Marks: 95%"
+          - generic [ref=e36]: Pending
+        - generic [ref=e37]:
+          - heading "Current Allocation" [level=3] [ref=e38]
+          - generic [ref=e39]: Allocation has not been run yet. You can still update your preferences.
+        - generic [ref=e40]:
+          - heading "Your Preferences" [level=3] [ref=e41]
+          - list [ref=e42]:
+            - listitem [ref=e43]:
+              - generic [ref=e44]: Priority 1
+              - generic [ref=e45]: ffd210c3-9b5c-4477-b18d-4f8a296de08b
+            - listitem [ref=e46]:
+              - generic [ref=e47]: Priority 2
+              - generic [ref=e48]: 763201ea-4f01-42b5-abd0-6b117ef43aa6
+            - listitem [ref=e49]:
+              - generic [ref=e50]: Priority 3
+              - generic [ref=e51]: 096bc609-4c8d-4fc2-b346-e1f525caa9e6
+  - button "Open Next.js Dev Tools" [ref=e26] [cursor=pointer]:
+    - img [ref=e27]
+  - alert [ref=e30]

@@ -214,7 +214,7 @@ export default function SQLAssistantPage() {
                {queryHistory.map(q => (
                  <div key={q.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-700">
                     <p className="font-medium mb-1">"{q.natural_language_query.replace(/^"|"$/g, '')}"</p>
-                    <p className="text-xs text-slate-500 font-mono mt-1 break-all bg-white p-1.5 rounded border border-slate-100 line-clamp-2" title={q.generated_sql}>
+                    <p className="text-xs text-slate-600 font-mono mt-1 whitespace-pre-wrap break-words bg-white p-2 rounded border border-slate-100 max-h-24 overflow-y-auto" title={q.generated_sql}>
                       {q.generated_sql}
                     </p>
                  </div>

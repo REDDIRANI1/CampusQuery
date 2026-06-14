@@ -1,32 +1,20 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const basicAuth = req.headers.get('authorization');
-
-  if (basicAuth) {
-    const authValue = basicAuth.split(' ')[1];
-    const [user, pwd] = atob(authValue).split(':');
-
-    const expectedUser = process.env.ADMIN_USER || 'admin';
-    const expectedPwd = process.env.ADMIN_PASSWORD || 'password123';
-
-    // Basic auth check against environment variables
-    if (user === expectedUser && pwd === expectedPwd) {
-      return NextResponse.next();
-    }
+  if (!req.nextUrl.pathname.startsWith("/admin")) {
+    return NextResponse.next();
   }
 
-  // Request basic authentication
-  return new NextResponse('Authentication required', {
-    status: 401,
-    headers: {
-      'WWW-Authenticate': 'Basic realm="Secure Area"',
-    },
-  });
+  if (req.cookies.get("admin_auth")?.value === "1") {
+    return NextResponse.next();
+  }
+
+  const loginUrl = new URL("/login", req.url);
+  loginUrl.searchParams.set("tab", "admin");
+  return NextResponse.redirect(loginUrl);
 }
 
-// Apply this middleware to all routes except Next.js internals and static files
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  matcher: ["/admin/:path*"],
 };

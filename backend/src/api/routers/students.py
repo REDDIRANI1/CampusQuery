@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel, Field, constr
 from uuid import UUID
 from typing import List, Optional
@@ -24,6 +24,7 @@ class StudentCreate(BaseModel):
 class PreferenceResponse(BaseModel):
     course_id: UUID
     priority: int
+    course_name: Optional[str] = None
     class Config:
         from_attributes = True
 
@@ -35,6 +36,7 @@ class StudentResponse(BaseModel):
     category: CategoryEnum
     allocation_status: AllocationStatusEnum
     allocated_course_id: Optional[UUID] = None
+    allocated_course_name: Optional[str] = None
     allocated_quota: Optional[CategoryEnum] = None
     preferences: List[PreferenceResponse]
 
@@ -79,8 +81,10 @@ def register_student(student: StudentCreate, db: Session = Depends(get_db)):
         db.add(db_pref)
         
     db.commit()
-    db.refresh(db_student)
-    return db_student
+    return db.query(Student).options(
+        joinedload(Student.preferences).joinedload(StudentPreference.course),
+        joinedload(Student.allocated_course)
+    ).filter(Student.id == db_student.id).first()
 
 @router.put("/{student_id}/preferences")
 def update_preferences(student_id: UUID, preferences: List[PreferenceCreate] = Body(..., min_length=1, max_length=3), db: Session = Depends(get_db)):
@@ -118,7 +122,10 @@ def update_preferences(student_id: UUID, preferences: List[PreferenceCreate] = B
 
 @router.get("/{student_id}/allocation", response_model=StudentResponse)
 def get_student_allocation(student_id: UUID, db: Session = Depends(get_db)):
-    student = db.query(Student).filter(Student.id == student_id).first()
+    student = db.query(Student).options(
+        joinedload(Student.preferences).joinedload(StudentPreference.course),
+        joinedload(Student.allocated_course)
+    ).filter(Student.id == student_id).first()
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     return student

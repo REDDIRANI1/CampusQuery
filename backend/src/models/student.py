@@ -34,6 +34,10 @@ class Student(Base):
     preferences = relationship("StudentPreference", back_populates="student", cascade="all, delete-orphan")
     allocated_course = relationship("Course", foreign_keys=[allocated_course_id])
 
+    @property
+    def allocated_course_name(self):
+        return self.allocated_course.name if self.allocated_course else None
+
 class StudentPreference(Base):
     __tablename__ = "student_preferences"
 
@@ -44,3 +48,7 @@ class StudentPreference(Base):
 
     student = relationship("Student", back_populates="preferences")
     course = relationship("Course")
+
+    @property
+    def course_name(self) -> str:
+        return self.course.name if self.course else ""

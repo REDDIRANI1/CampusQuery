@@ -5,7 +5,7 @@ services:
     image: postgres:15-alpine
     container_name: student-portal-db
     ports:
-      - "5433:5432"
+      - "5434:5432"
     environment:
       - POSTGRES_DB=student_portal_db
       - POSTGRES_USER=postgres
@@ -13,6 +13,41 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: student-portal-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://app_user:app_password@db:5432/student_portal_db
+      - ALLOCATION_READONLY_DATABASE_URL=postgresql://allocation_readonly_user:alloc_readonly_password@db:5432/student_portal_db
+      - DATASETS_READONLY_DATABASE_URL=postgresql://datasets_readonly_user:data_readonly_password@db:5432/student_portal_db
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=/api/v1
+    container_name: student-portal-frontend
+    ports:
+      - "80:3000"
+    depends_on:
+      - backend
     restart: unless-stopped
 
 volumes:

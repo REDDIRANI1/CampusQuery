@@ -22,11 +22,12 @@ BEGIN
 END
 $$;
 
--- 3. Grant schema usage and creation rights
+-- 3. Grant schema usage
 GRANT USAGE, CREATE ON SCHEMA public TO app_user;
 GRANT USAGE ON SCHEMA public TO allocation_readonly_user;
 
-GRANT USAGE, CREATE ON SCHEMA datasets_schema TO app_user;
+
+GRANT USAGE ON SCHEMA datasets_schema TO app_user;
 GRANT USAGE ON SCHEMA datasets_schema TO datasets_readonly_user;
 
 -- 4. Grant table privileges (existing tables)
@@ -46,8 +47,13 @@ GRANT SELECT ON ALL TABLES IN SCHEMA datasets_schema TO datasets_readonly_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO app_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA datasets_schema GRANT ALL ON TABLES TO app_user;
 
+-- For tables created by postgres:
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO allocation_readonly_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA datasets_schema GRANT SELECT ON TABLES TO datasets_readonly_user;
+
+-- For tables created by app_user:
+ALTER DEFAULT PRIVILEGES FOR ROLE app_user IN SCHEMA public GRANT SELECT ON TABLES TO allocation_readonly_user;
+ALTER DEFAULT PRIVILEGES FOR ROLE app_user IN SCHEMA datasets_schema GRANT SELECT ON TABLES TO datasets_readonly_user;
 
 -- Restrict datasets_readonly_user from public schema
 REVOKE ALL ON SCHEMA public FROM datasets_readonly_user;

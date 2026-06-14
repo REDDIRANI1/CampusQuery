@@ -5,9 +5,9 @@ from pydantic import BaseModel
 from uuid import UUID
 from typing import List, Optional
 
-from src.core.database import get_db, get_datasets_readonly_db
-from src.models.dataset import UploadedDataset, DatasetQuery
-from src.services.dataset_service import process_and_store_dataset
+from backend.src.core.database import get_db, get_datasets_readonly_db
+from backend.src.models.dataset import UploadedDataset, DatasetQuery
+from backend.src.services.dataset_service import process_and_store_dataset, delete_dataset
 
 router = APIRouter(prefix="/datasets", tags=["Datasets"])
 
@@ -59,24 +59,10 @@ def export_dataset_query(dataset_id: UUID):
     return {"message": "Export feature pending implementation"}
 
 @router.delete("/{dataset_id}")
-def delete_dataset(dataset_id: UUID, db: Session = Depends(get_db)):
-    """Delete a dataset, its query history, and drop its dynamic table."""
-    dataset = db.query(UploadedDataset).filter(UploadedDataset.id == dataset_id).first()
-    if not dataset:
+def delete_uploaded_dataset(dataset_id: UUID, db: Session = Depends(get_db)):
+    """Delete a dataset, its corresponding database table, and its query history."""
+    success = delete_dataset(dataset_id, db)
+    if not success:
         raise HTTPException(status_code=404, detail="Dataset not found")
-    
-    # 1. Drop the dynamic table
-    try:
-        drop_statement = text(f"DROP TABLE IF EXISTS datasets_schema.\"{dataset.dynamic_table_name}\" CASCADE")
-        db.execute(drop_statement)
-    except Exception as e:
-        print(f"Error dropping table {dataset.dynamic_table_name}: {e}")
-        # Proceed with metadata deletion anyway
-
-    # 2. Delete associated queries
-    db.query(DatasetQuery).filter(DatasetQuery.dataset_id == dataset_id).delete()
-    
-    # 3. Delete dataset record
-    db.delete(dataset)
-    db.commit()
     return {"message": "Dataset deleted successfully"}
+

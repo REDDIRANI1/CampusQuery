@@ -1,50 +1,22 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { fetchAPI } from '@/lib/api';
 
-interface Preference {
-  course_id: string;
-  priority: number;
-}
-
-interface StudentData {
-  id: string;
-  student_id_str: string;
-  name: string;
-  marks: number;
-  category: string;
-  allocation_status: string;
-  allocated_course_id?: string | null;
-  allocated_quota?: string | null;
-  preferences: Preference[];
-}
-
-export default function StudentDashboard() {
+function StudentDashboardContent() {
+  const searchParams = useSearchParams();
   const [studentId, setStudentId] = useState('');
   const [student, setStudent] = useState<StudentData | null>(null);
   const [courses, setCourses] = useState<Record<string, string>>({});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchAPI('/courses/')
-      .then(data => {
-        const courseMap: Record<string, string> = {};
-        data.forEach((c: any) => {
-          courseMap[c.id] = c.name;
-        });
-        setCourses(courseMap);
-      })
-      .catch(err => console.error("Failed to load courses:", err));
-  }, []);
-
-  const handleLookup = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const lookupStudent = async (id: string) => {
     setLoading(true);
     setError('');
     try {
-      const data = await fetchAPI(`/students/${studentId}/allocation`);
+      const data = await fetchAPI(`/students/${id}/allocation`);
       setStudent(data);
     } catch (err) {
       setError((err as Error).message || 'Student not found');
@@ -52,6 +24,19 @@ export default function StudentDashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    const idFromUrl = searchParams.get('id');
+    if (idFromUrl) {
+      setStudentId(idFromUrl);
+      lookupStudent(idFromUrl);
+    }
+  }, [searchParams]);
+
+  const handleLookup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await lookupStudent(studentId);
   };
 
   return (
@@ -100,7 +85,7 @@ export default function StudentDashboard() {
             {student.allocation_status === 'Allocated' ? (
               <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-green-800">
-                  You have been allocated to <strong>{student.allocated_course_id ? courses[student.allocated_course_id] || student.allocated_course_id : 'Unknown Course'}</strong> under the <strong>{student.allocated_quota}</strong> quota.
+                  You have been allocated <strong>{student.allocated_course_name}</strong> under the <strong>{student.allocated_quota}</strong> quota.
                 </p>
               </div>
             ) : student.allocation_status === 'Rejected' ? (
@@ -120,7 +105,7 @@ export default function StudentDashboard() {
               {student.preferences.map((p: Preference) => (
                 <li key={p.course_id} className="flex justify-between items-center p-3 border border-slate-100 rounded-lg">
                   <span className="font-medium text-slate-700">Priority {p.priority}</span>
-                  <span className="text-slate-500 text-sm font-medium">{courses[p.course_id] || p.course_id}</span>
+                  <span className="text-slate-900 font-semibold">{p.course_name || p.course_id}</span>
                 </li>
               ))}
             </ul>
@@ -128,5 +113,13 @@ export default function StudentDashboard() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function StudentDashboard() {
+  return (
+    <Suspense fallback={<div className="py-10 text-center text-slate-400">Loading dashboard...</div>}>
+      <StudentDashboardContent />
+    </Suspense>
   );
 }

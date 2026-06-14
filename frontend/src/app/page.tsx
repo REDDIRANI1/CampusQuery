@@ -18,9 +18,14 @@ export default function Home() {
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-3">Student Portal</h2>
           <p className="text-slate-500 mb-6 min-h-[60px]">Register, submit your course preferences, and view your allocation status.</p>
-          <Link href="/apply" className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
-            Apply Now
-          </Link>
+          <div className="flex flex-col gap-3">
+            <Link href="/apply" className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+              Apply Now
+            </Link>
+            <Link href="/login" className="w-full inline-flex justify-center items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md shadow-sm text-slate-700 bg-white hover:bg-slate-50">
+              Student Login
+            </Link>
+          </div>
         </div>
 
         {/* Admin Dashboard Card */}
@@ -30,7 +35,7 @@ export default function Home() {
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-3">Admin Dashboard</h2>
           <p className="text-slate-500 mb-6 min-h-[60px]">Run allocations, manage courses, and ask AI questions about the allocation results.</p>
-          <Link href="/admin" className="w-full inline-flex justify-center items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md shadow-sm text-slate-700 bg-white hover:bg-slate-50">
+          <Link href="/login?tab=admin" className="w-full inline-flex justify-center items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md shadow-sm text-slate-700 bg-white hover:bg-slate-50">
             Admin Login
           </Link>
         </div>

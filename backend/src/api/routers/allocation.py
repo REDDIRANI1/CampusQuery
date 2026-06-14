@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 
@@ -36,7 +36,11 @@ def fetch_stats(db: Session = Depends(get_db)):
 @router.get("/students", response_model=List[StudentResponse])
 def get_allocated_students(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     # Returns all students with their allocations
-    return db.query(Student).offset(skip).limit(limit).all()
+    from backend.src.models.student import StudentPreference
+    return db.query(Student).options(
+        joinedload(Student.preferences).joinedload(StudentPreference.course),
+        joinedload(Student.allocated_course)
+    ).offset(skip).limit(limit).all()
 
 # T031 Ask AI Endpoint (placeholder for now)
 class AIQuery(BaseModel):

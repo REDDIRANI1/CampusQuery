@@ -63,12 +63,46 @@ export default function SQLAssistantPage() {
   }, []);
 
   useEffect(() => {
+    setChatHistory([]); // Clear chat history when switching datasets
     if (activeDataset) {
       loadHistory(activeDataset);
     } else {
       setQueryHistory([]);
     }
-  }, [activeDataset, loadHistory]);
+  }, [activeDataset]);
+
+  const handleDeleteDataset = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this dataset? All its queries and table data will be lost permanently.")) {
+      return;
+    }
+    try {
+      await fetchAPI(`/datasets/${id}`, {
+        method: 'DELETE'
+      });
+      // If the deleted dataset was active, reset activeDataset
+      if (activeDataset === id) {
+        const remaining = datasets.filter(ds => ds.id !== id);
+        if (remaining.length > 0) {
+          setActiveDataset(remaining[0].id);
+        } else {
+          setActiveDataset(null);
+        }
+      }
+      await loadDatasets();
+    } catch (err: any) {
+      alert("Failed to delete dataset: " + err.message);
+    }
+  };
+
+
+  const loadHistory = async (id: string) => {
+    try {
+      const data = await fetchAPI(`/datasets/${id}/queries`);
+      setQueryHistory(data);
+    } catch (err) {
+      console.error("Failed to load history", err);
+    }
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -171,7 +205,7 @@ export default function SQLAssistantPage() {
   };
 
   return (
-    <div className="py-6 h-[calc(100vh-80px)] flex flex-col">
+    <div className="h-[calc(100vh-120px)] flex flex-col">
       <div className="mb-6">
         <h1 className="text-3xl font-extrabold text-slate-900">AI SQL Assistant</h1>
         <p className="text-slate-500">Upload CSV/Excel datasets and query them using natural language.</p>
@@ -179,7 +213,7 @@ export default function SQLAssistantPage() {
 
       <div className="flex-1 flex gap-6 min-h-0">
         {/* Sidebar: Datasets & History */}
-        <div className="w-80 flex flex-col gap-6 overflow-y-auto">
+        <div className="w-80 flex flex-col gap-6 overflow-y-auto pr-2 min-h-0 shrink-0">
           <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 shrink-0">
             <h2 className="text-lg font-bold text-slate-900 mb-4">Upload Dataset</h2>
             <label className="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-slate-300 border-dashed rounded-xl appearance-none cursor-pointer hover:border-blue-400 focus:outline-none">
@@ -194,24 +228,30 @@ export default function SQLAssistantPage() {
             {uploadError && <p className="mt-2 text-xs text-red-600">{uploadError}</p>}
           </div>
 
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 shrink-0 flex flex-col max-h-64">
+          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col max-h-48 min-h-0 shrink-0">
             <h2 className="text-lg font-bold text-slate-900 mb-4">Your Datasets</h2>
             <div className="space-y-2 overflow-y-auto flex-1">
               {datasets.map(ds => (
-                <div key={ds.id} className="relative group mb-2">
+                <div 
+                  key={ds.id} 
+                  className={`group relative flex items-center justify-between rounded-xl border transition-colors ${activeDataset === ds.id ? 'bg-blue-50 border-blue-200 text-blue-900' : 'bg-white border-slate-100 hover:bg-slate-50 text-slate-700'}`}
+                >
                   <button 
                     onClick={() => setActiveDataset(ds.id)}
-                    className={`w-full text-left px-4 py-3 rounded-xl border transition-colors ${activeDataset === ds.id ? 'bg-blue-50 border-blue-200 text-blue-900' : 'bg-white border-slate-100 hover:bg-slate-50 text-slate-700'}`}
+                    className="flex-1 text-left px-4 py-3 min-w-0"
                   >
-                    <p className="font-medium truncate pr-8">{ds.filename}</p>
+                    <p className="font-medium truncate pr-6">{ds.filename}</p>
                     <p className="text-xs text-slate-500">{ds.row_count} rows</p>
                   </button>
                   <button
-                    onClick={(e) => handleDeleteDataset(e, ds.id)}
-                    className="absolute right-3 top-3.5 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1"
-                    title="Delete Dataset"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteDataset(ds.id);
+                    }}
+                    className="absolute right-3 p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Delete dataset"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                   </button>
                 </div>
               ))}
@@ -220,14 +260,16 @@ export default function SQLAssistantPage() {
           </div>
           
           {/* Query History */}
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex-1 min-h-0 flex flex-col">
+          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col max-h-80 min-h-0 shrink-0">
              <h2 className="text-lg font-bold text-slate-900 mb-4">Query History</h2>
              <div className="space-y-3 overflow-y-auto flex-1">
                {queryHistory.map(q => (
-                  <div key={q.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-700">
-                     <p className="font-medium mb-1">&quot;{q.natural_language_query}&quot;</p>
-                     <p className="text-xs text-slate-400 truncate font-mono">{q.generated_sql}</p>
-                  </div>
+                 <div key={q.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-700">
+                    <p className="font-medium mb-1">"{q.natural_language_query.replace(/^"|"$/g, '')}"</p>
+                    <p className="text-xs text-slate-600 font-mono mt-1 whitespace-pre-wrap break-words bg-white p-2 rounded border border-slate-100 max-h-24 overflow-y-auto" title={q.generated_sql}>
+                      {q.generated_sql}
+                    </p>
+                 </div>
                ))}
                {queryHistory.length === 0 && <p className="text-sm text-slate-400 text-center py-4">No history for this dataset.</p>}
              </div>

@@ -3,7 +3,7 @@ import re
 import uuid
 from sqlalchemy import Table, Column, Integer, String, Float, MetaData, text
 from sqlalchemy.orm import Session
-from backend.src.models.dataset import UploadedDataset
+from backend.src.models.dataset import UploadedDataset, DatasetQuery
 from fastapi import UploadFile
 
 metadata = MetaData(schema="datasets_schema")
@@ -71,3 +71,26 @@ def process_and_store_dataset(file: UploadFile, db: Session) -> UploadedDataset:
     db.refresh(dataset_record)
     
     return dataset_record
+
+def delete_dataset(dataset_id: uuid.UUID, db: Session) -> bool:
+    # 1. Fetch metadata record
+    dataset_record = db.query(UploadedDataset).filter(UploadedDataset.id == dataset_id).first()
+    if not dataset_record:
+        return False
+
+    # 2. Drop the table from database
+    try:
+        table_name = dataset_record.dynamic_table_name
+        db.execute(text(f'DROP TABLE IF EXISTS datasets_schema."{table_name}"'))
+    except Exception as e:
+        import logging
+        logging.error(f"Error dropping table {dataset_record.dynamic_table_name}: {e}")
+
+    # 3. Delete any query logs
+    db.query(DatasetQuery).filter(DatasetQuery.dataset_id == dataset_id).delete()
+
+    # 4. Delete the dataset metadata record
+    db.delete(dataset_record)
+    db.commit()
+    return True
+

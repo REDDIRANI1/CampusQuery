@@ -32,12 +32,37 @@ export default function SQLAssistantPage() {
   }, []);
 
   useEffect(() => {
+    setChatHistory([]); // Clear chat history when switching datasets
     if (activeDataset) {
       loadHistory(activeDataset);
     } else {
       setQueryHistory([]);
     }
   }, [activeDataset]);
+
+  const handleDeleteDataset = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this dataset? All its queries and table data will be lost permanently.")) {
+      return;
+    }
+    try {
+      await fetchAPI(`/datasets/${id}`, {
+        method: 'DELETE'
+      });
+      // If the deleted dataset was active, reset activeDataset
+      if (activeDataset === id) {
+        const remaining = datasets.filter(ds => ds.id !== id);
+        if (remaining.length > 0) {
+          setActiveDataset(remaining[0].id);
+        } else {
+          setActiveDataset(null);
+        }
+      }
+      await loadDatasets();
+    } catch (err: any) {
+      alert("Failed to delete dataset: " + err.message);
+    }
+  };
+
 
   const loadHistory = async (id: string) => {
     try {
@@ -155,14 +180,28 @@ export default function SQLAssistantPage() {
             <h2 className="text-lg font-bold text-slate-900 mb-4">Your Datasets</h2>
             <div className="space-y-2 overflow-y-auto flex-1">
               {datasets.map(ds => (
-                <button 
+                <div 
                   key={ds.id} 
-                  onClick={() => setActiveDataset(ds.id)}
-                  className={`w-full text-left px-4 py-3 rounded-xl border transition-colors ${activeDataset === ds.id ? 'bg-blue-50 border-blue-200 text-blue-900' : 'bg-white border-slate-100 hover:bg-slate-50 text-slate-700'}`}
+                  className={`group relative flex items-center justify-between rounded-xl border transition-colors ${activeDataset === ds.id ? 'bg-blue-50 border-blue-200 text-blue-900' : 'bg-white border-slate-100 hover:bg-slate-50 text-slate-700'}`}
                 >
-                  <p className="font-medium truncate">{ds.filename}</p>
-                  <p className="text-xs text-slate-500">{ds.row_count} rows</p>
-                </button>
+                  <button 
+                    onClick={() => setActiveDataset(ds.id)}
+                    className="flex-1 text-left px-4 py-3 min-w-0"
+                  >
+                    <p className="font-medium truncate pr-6">{ds.filename}</p>
+                    <p className="text-xs text-slate-500">{ds.row_count} rows</p>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteDataset(ds.id);
+                    }}
+                    className="absolute right-3 p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Delete dataset"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                  </button>
+                </div>
               ))}
               {datasets.length === 0 && <p className="text-sm text-slate-400 text-center py-4">No datasets uploaded yet.</p>}
             </div>

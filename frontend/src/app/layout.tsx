@@ -30,6 +30,9 @@ export default function RootLayout({
                   <a href="/apply" className="border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                     Apply for Course
                   </a>
+                  <a href="/login" className="border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                    Login
+                  </a>
                   <a href="/admin" className="border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                     Admin Dashboard
                   </a>

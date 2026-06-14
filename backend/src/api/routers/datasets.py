@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from backend.src.core.database import get_db, get_datasets_readonly_db
 from backend.src.models.dataset import UploadedDataset, DatasetQuery
-from backend.src.services.dataset_service import process_and_store_dataset
+from backend.src.services.dataset_service import process_and_store_dataset, delete_dataset
 
 router = APIRouter(prefix="/datasets", tags=["Datasets"])
 
@@ -57,3 +57,12 @@ def get_dataset_queries(dataset_id: str, db: Session = Depends(get_db)):
 def export_dataset_query(dataset_id: UUID):
     # Bonus feature placeholder
     return {"message": "Export feature pending implementation"}
+
+@router.delete("/{dataset_id}")
+def delete_uploaded_dataset(dataset_id: UUID, db: Session = Depends(get_db)):
+    """Delete a dataset, its corresponding database table, and its query history."""
+    success = delete_dataset(dataset_id, db)
+    if not success:
+        raise HTTPException(status_code=404, detail="Dataset not found")
+    return {"message": "Dataset deleted successfully"}
+

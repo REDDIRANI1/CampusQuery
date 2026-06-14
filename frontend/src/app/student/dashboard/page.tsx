@@ -1,20 +1,21 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { fetchAPI } from '@/lib/api';
 
-export default function StudentDashboard() {
+function StudentDashboardContent() {
+  const searchParams = useSearchParams();
   const [studentId, setStudentId] = useState('');
   const [student, setStudent] = useState<any>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLookup = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const lookupStudent = async (id: string) => {
     setLoading(true);
     setError('');
     try {
-      const data = await fetchAPI(`/students/${studentId}/allocation`);
+      const data = await fetchAPI(`/students/${id}/allocation`);
       setStudent(data);
     } catch (err: any) {
       setError(err.message || 'Student not found');
@@ -22,6 +23,19 @@ export default function StudentDashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    const idFromUrl = searchParams.get('id');
+    if (idFromUrl) {
+      setStudentId(idFromUrl);
+      lookupStudent(idFromUrl);
+    }
+  }, [searchParams]);
+
+  const handleLookup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await lookupStudent(studentId);
   };
 
   return (
@@ -68,7 +82,9 @@ export default function StudentDashboard() {
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Current Allocation</h3>
             {student.allocation_status === 'Allocated' ? (
               <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-800">You have been allocated a course under the <strong>{student.allocated_quota}</strong> quota.</p>
+                <p className="text-green-800">
+                  You have been allocated <strong>{student.allocated_course_name}</strong> under the <strong>{student.allocated_quota}</strong> quota.
+                </p>
               </div>
             ) : student.allocation_status === 'Rejected' ? (
               <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -87,7 +103,7 @@ export default function StudentDashboard() {
               {student.preferences.map((p: any) => (
                 <li key={p.course_id} className="flex justify-between items-center p-3 border border-slate-100 rounded-lg">
                   <span className="font-medium text-slate-700">Priority {p.priority}</span>
-                  <span className="text-slate-500 font-mono text-sm">{p.course_id}</span>
+                  <span className="text-slate-900 font-semibold">{p.course_name || p.course_id}</span>
                 </li>
               ))}
             </ul>
@@ -95,5 +111,13 @@ export default function StudentDashboard() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function StudentDashboard() {
+  return (
+    <Suspense fallback={<div className="py-10 text-center text-slate-400">Loading dashboard...</div>}>
+      <StudentDashboardContent />
+    </Suspense>
   );
 }

@@ -153,7 +153,7 @@ export default function SQLAssistantPage() {
   };
 
   return (
-    <div className="py-6 h-[calc(100vh-80px)] flex flex-col">
+    <div className="h-[calc(100vh-120px)] flex flex-col">
       <div className="mb-6">
         <h1 className="text-3xl font-extrabold text-slate-900">AI SQL Assistant</h1>
         <p className="text-slate-500">Upload CSV/Excel datasets and query them using natural language.</p>
@@ -161,7 +161,7 @@ export default function SQLAssistantPage() {
 
       <div className="flex-1 flex gap-6 min-h-0">
         {/* Sidebar: Datasets & History */}
-        <div className="w-80 flex flex-col gap-6 overflow-y-auto">
+        <div className="w-80 flex flex-col gap-6 overflow-y-auto pr-2 min-h-0 shrink-0">
           <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 shrink-0">
             <h2 className="text-lg font-bold text-slate-900 mb-4">Upload Dataset</h2>
             <label className="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-slate-300 border-dashed rounded-xl appearance-none cursor-pointer hover:border-blue-400 focus:outline-none">
@@ -176,7 +176,7 @@ export default function SQLAssistantPage() {
             {uploadError && <p className="mt-2 text-xs text-red-600">{uploadError}</p>}
           </div>
 
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 shrink-0 flex flex-col max-h-64">
+          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col max-h-48 min-h-0 shrink-0">
             <h2 className="text-lg font-bold text-slate-900 mb-4">Your Datasets</h2>
             <div className="space-y-2 overflow-y-auto flex-1">
               {datasets.map(ds => (
@@ -208,13 +208,15 @@ export default function SQLAssistantPage() {
           </div>
           
           {/* Query History */}
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex-1 min-h-0 flex flex-col">
+          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col max-h-80 min-h-0 shrink-0">
              <h2 className="text-lg font-bold text-slate-900 mb-4">Query History</h2>
              <div className="space-y-3 overflow-y-auto flex-1">
                {queryHistory.map(q => (
                  <div key={q.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm text-slate-700">
-                    <p className="font-medium mb-1">"{q.natural_language_query}"</p>
-                    <p className="text-xs text-slate-400 truncate font-mono">{q.generated_sql}</p>
+                    <p className="font-medium mb-1">"{q.natural_language_query.replace(/^"|"$/g, '')}"</p>
+                    <p className="text-xs text-slate-500 font-mono mt-1 break-all bg-white p-1.5 rounded border border-slate-100 line-clamp-2" title={q.generated_sql}>
+                      {q.generated_sql}
+                    </p>
                  </div>
                ))}
                {queryHistory.length === 0 && <p className="text-sm text-slate-400 text-center py-4">No history for this dataset.</p>}

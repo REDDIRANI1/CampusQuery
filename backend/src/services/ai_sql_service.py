@@ -133,7 +133,7 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session, da
             return {
                 "sql": sql_query,
                 "results": rows,
-                "insight": insight_text + " [Note: Running in offline fallback mode because Gemini API key is not configured.]",
+                "insight": insight_text,
                 "chart_config": None
             }
         except Exception as e:
@@ -239,13 +239,13 @@ def ask_dataset_question(dynamic_table_name: str, question: str, db: Session, da
             return {
                 "sql": sql_query_off,
                 "results": rows,
-                "insight": insight_text_off + f" [Note: Gemini API failed ({str(e)}). Running in offline fallback mode.]",
+                "insight": insight_text_off,
                 "chart_config": None
             }
         except Exception as e_inner:
             fallback_msg = "I couldn't process that query correctly. Try asking a simpler question, or using specific keywords like 'count', 'average', or 'list'."
             return {
-                "error": f"API Error: {str(e)}. Offline Fallback Error: {str(e_inner)}",
+                "error": "Failed to process query due to API limitations and offline query execution constraints.",
                 "sql": None,
                 "results": [],
                 "insight": fallback_msg,

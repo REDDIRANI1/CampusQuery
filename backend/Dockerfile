@@ -9,8 +9,8 @@ RUN pip install --no-cache-dir -r ./backend/requirements.txt
 # Copy backend source code into the 'backend' folder to maintain package imports
 COPY . ./backend
 
-# Set PYTHONPATH so the 'backend' folder is recognized as a package
-ENV PYTHONPATH=/app
+# Set PYTHONPATH so both 'from backend.src...' and 'from src...' imports work
+ENV PYTHONPATH=/app:/app/backend
 
 # Expose FastAPI port
 EXPOSE 8000

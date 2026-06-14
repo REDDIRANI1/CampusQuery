@@ -8,11 +8,11 @@ socket.getaddrinfo = my_getaddrinfo
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from backend.src.core.config import settings
-from backend.src.api.routers import courses, students, allocation, datasets
+from src.core.config import settings
+from src.api.routers import courses, students, allocation, datasets
 from sqlalchemy import text
-from backend.src.core.database import engine
-from backend.src.models.base import Base
+from src.core.database import engine
+from src.models.base import Base
 # Import models to ensure they are registered on the Base before metadata.create_all is called
 from src.models.course import Course, SystemState
 from src.models.student import Student, StudentPreference

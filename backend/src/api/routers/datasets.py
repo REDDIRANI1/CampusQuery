@@ -5,9 +5,9 @@ from pydantic import BaseModel
 from uuid import UUID
 from typing import List, Optional
 
-from backend.src.core.database import get_db, get_datasets_readonly_db
-from backend.src.models.dataset import UploadedDataset, DatasetQuery
-from backend.src.services.dataset_service import process_and_store_dataset, delete_dataset
+from src.core.database import get_db, get_datasets_readonly_db
+from src.models.dataset import UploadedDataset, DatasetQuery
+from src.services.dataset_service import process_and_store_dataset, delete_dataset
 
 router = APIRouter(prefix="/datasets", tags=["Datasets"])
 

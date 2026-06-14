@@ -36,7 +36,7 @@ def fetch_stats(db: Session = Depends(get_db)):
 @router.get("/students", response_model=List[StudentResponse])
 def get_allocated_students(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     # Returns all students with their allocations
-    from backend.src.models.student import StudentPreference
+    from src.models.student import StudentPreference
     return db.query(Student).options(
         joinedload(Student.preferences).joinedload(StudentPreference.course),
         joinedload(Student.allocated_course)

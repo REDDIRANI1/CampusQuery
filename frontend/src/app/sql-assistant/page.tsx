@@ -95,15 +95,6 @@ export default function SQLAssistantPage() {
   };
 
 
-  const loadHistory = async (id: string) => {
-    try {
-      const data = await fetchAPI(`/datasets/${id}/queries`);
-      setQueryHistory(data);
-    } catch (err) {
-      console.error("Failed to load history", err);
-    }
-  };
-
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -115,7 +106,7 @@ export default function SQLAssistantPage() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/datasets/upload', {
+      const response = await fetch('/api/v1/datasets/upload', {
         method: 'POST',
         body: formData,
       });
@@ -135,26 +126,6 @@ export default function SQLAssistantPage() {
     }
   };
 
-  const handleDeleteDataset = async (e: React.MouseEvent, datasetId: string) => {
-    e.stopPropagation();
-    if (!confirm("Are you sure you want to delete this dataset? This will drop the table and delete all query history.")) return;
-    
-    try {
-      const response = await fetch(`http://localhost:8000/api/v1/datasets/${datasetId}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) {
-        throw new Error('Failed to delete dataset');
-      }
-      
-      if (activeDataset === datasetId) {
-        setActiveDataset(null);
-      }
-      await loadDatasets();
-    } catch (err) {
-      alert((err as Error).message);
-    }
-  };
 
   const handleAskAI = async (e: React.FormEvent) => {
     e.preventDefault();

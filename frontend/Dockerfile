@@ -10,9 +10,15 @@ RUN npm ci
 # Copy application source
 COPY . .
 
-# Build-time environment variable for backend API URL configuration
+# Build-time environment variables
 ARG NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+ARG NEXT_PUBLIC_ADMIN_USER=admin
+ENV NEXT_PUBLIC_ADMIN_USER=$NEXT_PUBLIC_ADMIN_USER
+
+ARG NEXT_PUBLIC_ADMIN_PASSWORD=password123
+ENV NEXT_PUBLIC_ADMIN_PASSWORD=$NEXT_PUBLIC_ADMIN_PASSWORD
 
 # Build the production Next.js bundle
 RUN npm run build

@@ -18,8 +18,10 @@ from src.models.course import Course, SystemState
 from src.models.student import Student, StudentPreference
 from src.models.dataset import UploadedDataset, DatasetQuery
 
+import logging
+
 # Setup logging
-setup_logging()
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Create all core application tables in the public schema on startup

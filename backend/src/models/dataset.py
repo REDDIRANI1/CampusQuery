@@ -6,6 +6,7 @@ from src.models.base import Base
 
 class UploadedDataset(Base):
     __tablename__ = "uploaded_datasets"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     filename = Column(String, nullable=False)
@@ -15,6 +16,7 @@ class UploadedDataset(Base):
 
 class DatasetQuery(Base):
     __tablename__ = "dataset_queries"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     dataset_id = Column(UUID(as_uuid=True), nullable=True) # Nullable if querying public schema

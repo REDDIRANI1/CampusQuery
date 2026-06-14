@@ -7,8 +7,7 @@ import { fetchAPI } from '@/lib/api';
 function StudentDashboardContent() {
   const searchParams = useSearchParams();
   const [studentId, setStudentId] = useState('');
-  const [student, setStudent] = useState<StudentData | null>(null);
-  const [courses, setCourses] = useState<Record<string, string>>({});
+  const [student, setStudent] = useState<any>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,8 +17,8 @@ function StudentDashboardContent() {
     try {
       const data = await fetchAPI(`/students/${id}/allocation`);
       setStudent(data);
-    } catch (err) {
-      setError((err as Error).message || 'Student not found');
+    } catch (err: any) {
+      setError(err.message || 'Student not found');
       setStudent(null);
     } finally {
       setLoading(false);
@@ -51,7 +50,6 @@ function StudentDashboardContent() {
           <input
             type="text"
             required
-            aria-label="Enter your Student UUID"
             placeholder="Enter your Student UUID"
             value={studentId}
             onChange={e => setStudentId(e.target.value)}
@@ -84,9 +82,7 @@ function StudentDashboardContent() {
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Current Allocation</h3>
             {student.allocation_status === 'Allocated' ? (
               <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-800">
-                  You have been allocated <strong>{student.allocated_course_name}</strong> under the <strong>{student.allocated_quota}</strong> quota.
-                </p>
+                <p className="text-green-800">You have been allocated a course under the <strong>{student.allocated_quota}</strong> quota.</p>
               </div>
             ) : student.allocation_status === 'Rejected' ? (
               <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -102,10 +98,10 @@ function StudentDashboardContent() {
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Your Preferences</h3>
             <ul className="space-y-3">
-              {student.preferences.map((p: Preference) => (
+              {student.preferences.map((p: any) => (
                 <li key={p.course_id} className="flex justify-between items-center p-3 border border-slate-100 rounded-lg">
                   <span className="font-medium text-slate-700">Priority {p.priority}</span>
-                  <span className="text-slate-900 font-semibold">{p.course_name || p.course_id}</span>
+                  <span className="text-slate-500 font-mono text-sm">{p.course_id}</span>
                 </li>
               ))}
             </ul>

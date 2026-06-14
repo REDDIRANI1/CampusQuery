@@ -43,7 +43,7 @@ class StudentResponse(BaseModel):
     class Config:
         from_attributes = True
 
-@router.post("/", response_model=StudentResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=StudentResponse, status_code=status.HTTP_201_CREATED)
 def register_student(student: StudentCreate, db: Session = Depends(get_db)):
     # Check if locked
     state = db.query(SystemState).first()

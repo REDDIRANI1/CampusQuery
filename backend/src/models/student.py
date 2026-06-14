@@ -26,7 +26,7 @@ class Student(Base):
     marks = Column(Float, nullable=False)
     category = Column(Enum(CategoryEnum), nullable=False)
     application_date = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-    allocation_status = Column(Enum(AllocationStatusEnum), default=AllocationStatusEnum.Pending)
+    allocation_status = Column(Enum(AllocationStatusEnum), nullable=False, server_default="Pending", default=AllocationStatusEnum.Pending)
     allocated_course_id = Column(UUID(as_uuid=True), ForeignKey('courses.id'), nullable=True)
     allocated_quota = Column(Enum(CategoryEnum), nullable=True)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))

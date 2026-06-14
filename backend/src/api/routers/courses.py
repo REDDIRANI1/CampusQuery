@@ -24,7 +24,7 @@ class CourseResponse(CourseCreate):
     class Config:
         from_attributes = True
 
-@router.post("/", response_model=CourseResponse)
+@router.post("", response_model=CourseResponse)
 def create_course(course: CourseCreate, db: Session = Depends(get_db)):
     total_seats = course.general_seats + course.obc_seats + course.sc_seats + course.st_seats
     db_course = Course(
@@ -40,6 +40,6 @@ def create_course(course: CourseCreate, db: Session = Depends(get_db)):
     db.refresh(db_course)
     return db_course
 
-@router.get("/", response_model=List[CourseResponse])
+@router.get("", response_model=List[CourseResponse])
 def get_courses(db: Session = Depends(get_db)):
     return db.query(Course).all()

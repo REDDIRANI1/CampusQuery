@@ -30,7 +30,7 @@ async def upload_dataset(file: UploadFile = File(...), db: Session = Depends(get
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.get("/", response_model=List[DatasetResponse])
+@router.get("", response_model=List[DatasetResponse])
 def list_datasets(db: Session = Depends(get_db)):
     return db.query(UploadedDataset).all()
 
